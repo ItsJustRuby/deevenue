@@ -1,0 +1,5 @@
+#!/bin/sh
+set -e
+
+lint-staged
+task prod:build

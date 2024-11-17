@@ -1,0 +1,66 @@
+services:
+  api-ui:
+    image: redocly/redoc:latest
+    container_name: deevenue-api-ui
+    environment:
+      - SPEC_URL=https://deevenue.localhost/api/openapi/v1.json
+  backend:
+    build:
+      dockerfile: dev.Dockerfile
+      context: src/backend
+    env_file: .env.dev
+    volumes:
+      - ./development/importMe:/import
+      - ./development/backup:/backup
+  frontend:
+    build:
+      dockerfile: dev.Dockerfile
+      context: src/frontend
+    container_name: deevenue-frontend
+    restart: always
+    env_file: .env.dev
+    volumes:
+      - ./src/frontend:/src
+      # Intentionally mounting nothing on this folder means
+      # that even if we mount sth to /src, the node_modules subfolder
+      # is not overwritten by the one from the hose
+      - /src/node_modules
+  db:
+    build:
+      dockerfile: dev.Dockerfile
+      context: src/db
+    volumes:
+      - "./development/postgres:/data"
+    env_file: .env.dev
+  db-ui:
+    build:
+      dockerfile: dev.Dockerfile
+      context: src/db-ui
+    container_name: deevenue-db-ui
+    depends_on:
+      - db
+    environment:
+      - CLOUDBEAVER_APP_ANONYMOUS_ACCESS_ENABLED=true
+      - CLOUDBEAVER_APP_GRANT_CONNECTIONS_ACCESS_TO_ANONYMOUS_TEAM=true
+      - CB_SERVER_NAME=Deevenue DB UI
+      - CB_SERVER_URL=https://deevenue-db-ui.localhost/
+      # You don't need these credentials to log in, but setting them skips the default setup screens.
+      - CB_ADMIN_NAME=cbadmin
+      - CB_ADMIN_PASSWORD=Cbadmin1234
+    command: ["-d", "--restart", "unless-stopped"]
+  entrypoint:
+    command: caddy run --watch --adapter caddyfile --config /etc/caddy/Caddyfile
+    depends_on:
+      - api-ui
+      - db-ui
+      - frontend
+    env_file: .env.dev
+    ports:
+      - "443:443"
+    volumes:
+      - "./src/entrypoint/dev.Caddyfile:/etc/caddy/Caddyfile"
+      - "./development/caddy/data:/data"
+  storage:
+    volumes:
+      - "./development/minio:/data:rw"
+    env_file: .env.dev

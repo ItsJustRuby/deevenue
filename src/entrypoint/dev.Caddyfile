@@ -1,0 +1,25 @@
+deevenue-db-ui.localhost {
+    reverse_proxy deevenue-db-ui:8978
+}
+
+deevenue-storage-ui.localhost {
+    reverse_proxy deevenue-storage:9001
+}
+
+deevenue-api-ui.localhost {
+    reverse_proxy deevenue-api-ui:80
+}
+
+*.{$DEEVENUE_PUBLIC_URL} {
+    redir https://{$DEEVENUE_PUBLIC_URL} permanent
+}
+
+{$DEEVENUE_PUBLIC_URL} {
+    handle_path /api/* {
+        reverse_proxy deevenue-backend:8080 {
+            header_up {$DEEVENUE_AUTH_HEADER_NAME} {$DEEVENUE_AUTH_HEADER_VALUE}
+        }
+    }
+
+    reverse_proxy deevenue-frontend:3000
+}

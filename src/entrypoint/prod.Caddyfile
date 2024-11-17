@@ -1,0 +1,21 @@
+{
+	servers {
+		trusted_proxies static private_ranges
+    }
+}
+
+{$DEEVENUE_PUBLIC_URL} {
+    handle_path /api/* {
+        reverse_proxy deevenue-backend:8080
+    }
+
+    handle {
+        root * /app/frontend
+        encode gzip
+        route {
+            try_files {path} /index.html
+            header /index.html Cache-Control "public, max-age=0, must-revalidate"
+        }
+        file_server
+    }
+}

@@ -1,0 +1,69 @@
+name: Lint
+
+on:
+  - push
+  - workflow_dispatch
+
+jobs:
+  Frontend:
+    name: "Frontend & OpenAPI"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - uses: arduino/setup-task@v2
+
+      - name: Run linters
+        run: task ci:lint:frontend
+  Backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0
+      - uses: arduino/setup-task@v2
+
+      - name: Run linters
+        run: task ci:lint:backend
+  OpenAPI:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - uses: arduino/setup-task@v2
+      - name: Run OpenAPI linter
+        run: task ci:lint:openapi
+  Dockerfiles:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run hadolint
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: "*.Dockerfile"
+          recursive: true
+  github-action-workflows:
+    name: "GitHub Action workflows"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download actionlint
+        id: get_actionlint
+        shell: bash
+        run: bash <(curl https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash)
+      - name: Run linter
+        shell: bash
+        run: |
+          echo "::add-matcher::.github/actionlint-matcher.json"
+          ${{ steps.get_actionlint.outputs.executable }} -color
+  shellcheck:
+    name: "Shell scripts"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run ShellCheck
+        uses: ludeeus/action-shellcheck@2.0.0
+        with:
+          additional_files: "pre-commit"
