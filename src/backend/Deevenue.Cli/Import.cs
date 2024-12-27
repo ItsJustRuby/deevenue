@@ -16,7 +16,9 @@ internal class Import : AsyncCommand<Import.Settings>
 
     private static readonly RestClient apiClient = new(new RestClientOptions("https://localhost/")
     {
-        CookieContainer = new CookieContainer()
+        CookieContainer = new CookieContainer(),
+        // Screw security, we are just routing localhost to localhost.
+        RemoteCertificateValidationCallback = (_, _, _, _) => true
     });
 
     public override async Task<int> ExecuteAsync(CommandContext context, Settings settings)

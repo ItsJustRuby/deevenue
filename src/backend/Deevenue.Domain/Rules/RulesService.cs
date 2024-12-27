@@ -16,7 +16,7 @@ internal class RulesService(
         if (index < 0 || index > current.Rules.Length - 1)
             return null;
 
-        var newRulesArray = current.Rules.Where((rule, currentIndex) => currentIndex != index).ToArray();
+        var newRulesArray = current.Rules.Where((_, currentIndex) => currentIndex != index).ToArray();
         var newRules = new RulesViewModel { Rules = newRulesArray };
         await PutAsync(newRules);
         return newRules;
