@@ -42,7 +42,7 @@
         <Tooltip.Trigger>
           <Switch bind:checked={isSwitchChecked} />
         </Tooltip.Trigger>
-        <Tooltip.Content
+        <Tooltip.Content interactOutsideBehavior="ignore"
           >SFW mode {isSwitchChecked ? "ON" : "OFF"}</Tooltip.Content
         >
       </Tooltip.Root>
