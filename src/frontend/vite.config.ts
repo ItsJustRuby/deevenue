@@ -1,8 +1,7 @@
-import { defineConfig } from "vitest/config";
 import { sveltekit } from "@sveltejs/kit/vite";
 
 import { version } from "./constants.json";
-import { type UserConfig } from "vite";
+import { defineConfig, type UserConfig } from "vite";
 
 export default defineConfig(({ command }) => {
   const result: UserConfig = {
@@ -12,10 +11,6 @@ export default defineConfig(({ command }) => {
       __DEEVENUE_VERSION__: JSON.stringify(version),
     },
     envPrefix: "DEEVENUE_",
-
-    test: {
-      include: ["src/**/*.{test,spec}.{js,ts}"],
-    },
   };
 
   if (command === "serve") {
