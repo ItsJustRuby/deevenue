@@ -33,7 +33,7 @@ internal class Invisible : IRandomRuleViolationViewModel
         => visitor.VisitInvisible();
 }
 
-public interface IRandomRuleViolationViewModelVisitor<T>
+public interface IRandomRuleViolationViewModelVisitor<out T>
 {
     T VisitNone();
     T VisitInvisible();

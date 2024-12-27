@@ -1,6 +1,6 @@
 namespace Deevenue.Domain.Rules;
 
-internal interface IIffViewModelVisitor<T>
+internal interface IIffViewModelVisitor<out T>
 {
     T VisitHasRatingIff(HasRatingIffViewModel iff);
     T VisitAllIff(AllIffViewModel iff);

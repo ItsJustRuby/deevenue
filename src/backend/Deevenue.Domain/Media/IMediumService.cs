@@ -12,7 +12,7 @@ public interface IMediumService
     Task<ITryGetResult> TryGetAsync(Guid id);
 }
 
-public interface ITryGetResultVisitor<T>
+public interface ITryGetResultVisitor<out T>
 {
     T VisitSuccess(MediumViewModel medium);
     T VisitNotSfw();

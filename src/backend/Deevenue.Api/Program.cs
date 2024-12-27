@@ -24,7 +24,7 @@ builder.Services.AddOpenApi(o =>
 {
     // This shuts up the linter, and is valid - let us be explicit that we do not have
     // any security (on the application level) whatsoever.
-    o.AddDocumentTransformer((document, context, cancellationToken) =>
+    o.AddDocumentTransformer((document, _, _) =>
     {
         document.SecurityRequirements = [[]];
         return Task.CompletedTask;
@@ -34,7 +34,7 @@ builder.Services.AddOpenApi(o =>
     // on the (interface) parent type in the resulting OpenAPI Schema,
     // explicitly also flag it as required on all implementations.
     // This fixes OpenAPI client generators that do not automatically understand that.
-    o.AddSchemaTransformer((schema, context, cancellationToken) =>
+    o.AddSchemaTransformer((schema, _, _) =>
     {
         if (schema.Discriminator == null)
             return Task.CompletedTask;

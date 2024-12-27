@@ -1,7 +1,5 @@
 ﻿using System.Diagnostics;
 using System.Net;
-using System.Net.Security;
-using System.Security.Cryptography.X509Certificates;
 using System.Text.Json;
 using RestSharp;
 
@@ -46,7 +44,7 @@ internal class ReverseProxy : IDisposable
         Console.WriteLine("Starting up reverse proxy.");
 
         var awaitCorrectLogMessage = new TaskCompletionSource();
-        caddyProcess.ErrorDataReceived += (object process, DataReceivedEventArgs e) =>
+        caddyProcess.ErrorDataReceived += (object _, DataReceivedEventArgs e) =>
         {
             var caddyLine = JsonSerializer.Deserialize<CaddyLine>(e.Data!, JsonSerializerSettings.Default);
             if (caddyLine!.From != null && caddyLine.To != null)
@@ -63,8 +61,7 @@ internal class ReverseProxy : IDisposable
         var options = new RestClientOptions("https://localhost")
         {
             // Screw security, we are just routing localhost to localhost.
-            RemoteCertificateValidationCallback
-                = (object sender, X509Certificate? certificate, X509Chain? chain, SslPolicyErrors sslPolicyErrors) => true
+            RemoteCertificateValidationCallback = (_, _, _, _) => true
         };
         using var pingClient = new RestClient(options);
 
