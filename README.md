@@ -20,11 +20,11 @@ Deevenue is a small imagebooru with an emphasis on speed and customization.
 
 ### Setup
 
-Local development uses docker compose. See [./docker-compose.dev.yml](./docker-compose.dev.yml).
+Local development uses docker compose. See [docker-compose.dev.yml](./docker-compose.dev.yml).
 
-Customize your environment variables by copying [./example.env](./example.env).
+Customize your environment variables by copying [example.env](./example.env).
 
-Common tasks are configured using [Task](https://github.com/go-task/task) in [./Taskfile.yml](./Taskfile.yml). You probably want to run e.g. `task dev:run`.
+Common tasks are configured using [Task](https://github.com/go-task/task) in [Taskfile.yml](./Taskfile.yml). You probably want to run e.g. `task dev:run`.
 
 ### Migrations
 
