@@ -1,0 +1,42 @@
+name: Build docker images for PR
+
+on:
+  push:
+    branches-ignore: ["main"]
+  workflow_dispatch:
+
+jobs:
+  build-and-push:
+    name: 'Build "${{ matrix.component.name }}" image'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    strategy:
+      matrix:
+        component:
+          - name: "backend"
+            context: "src/backend"
+            file: "src/backend/prod.Dockerfile"
+
+          - name: "storage"
+            context: "src/storage"
+            file: "src/storage/Dockerfile"
+
+          - name: "entrypoint"
+            context: "src/entrypoint"
+            file: "src/entrypoint/Dockerfile"
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - uses: arduino/setup-task@v2
+
+      - run: task prod:build-frontend
+        if: ${{ matrix.component.name == 'entrypoint' }}
+
+      - uses: docker/build-push-action@v6
+        name: 'Build & push "${{ matrix.component.name}}" docker image'
+        with:
+          context: ${{ matrix.component.context }}
+          file: ${{ matrix.component.file }}
+          push: false

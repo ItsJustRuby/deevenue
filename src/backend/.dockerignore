@@ -1,0 +1,6 @@
+**/bin
+**/obj
+
+**/Deevenue.Api.json
+*.Dockerfile
+.dockerignore

@@ -1,0 +1,32 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "run",
+            "type": "shell",
+            "command": "task dev:run",
+            "problemMatcher": [],
+            "presentation": {
+                "close": true
+            }
+        },
+        {
+            "label": "full",
+            "type": "shell",
+            "command": "task dev:full",
+            "problemMatcher": [],
+            "presentation": {
+                "close": true
+            }
+        },
+        {
+            "label": "schema",
+            "type": "shell",
+            "command": "task dev:schema",
+            "problemMatcher": [],
+            "presentation": {
+                "close": true
+            }
+        }
+    ]
+}

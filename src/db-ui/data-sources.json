@@ -1,0 +1,44 @@
+{
+  "folders": {},
+  "connections": {
+    "postgres-jdbc-1936824517d-be1191dd517df52": {
+      "provider": "postgresql",
+      "driver": "postgres-jdbc",
+      "name": "deevenue",
+      "save-password": true,
+      "configuration": {
+        "host": "deevenue-db",
+        "port": "5432",
+        "database": "deevenue",
+        "url": "jdbc:postgresql://deevenue-db:5432/deevenue?user=deevenue&password=fKo1Ewe4OXXHdC2XXtNakumaR2GzlK8l",
+        "configurationType": "MANUAL",
+        "home": "postgresql_client",
+        "type": "dev",
+        "closeIdleConnection": true,
+        "provider-properties": {
+          "@dbeaver-chosen-role@": ""
+        },
+        "auth-model": "native",
+        "bootstrap": {
+          "autocommit": true
+        }
+      }
+    }
+  },
+  "connection-types": {
+    "dev": {
+      "name": "Development",
+      "color": "255,255,255",
+      "description": "Regular development database",
+      "auto-commit": true,
+      "confirm-execute": false,
+      "confirm-data-change": false,
+      "smart-commit": false,
+      "smart-commit-recover": true,
+      "auto-close-transactions": true,
+      "close-transactions-period": 1800,
+      "auto-close-connections": true,
+      "close-connections-period": 14400
+    }
+  }
+}

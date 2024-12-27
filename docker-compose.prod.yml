@@ -1,0 +1,22 @@
+services:
+  backend:
+    build:
+      dockerfile: prod.Dockerfile
+      context: src/backend
+    env_file: .env.production
+  db:
+    image: postgres:17.1-alpine3.20
+    env_file: .env.production
+    volumes:
+      - "./prod/postgres:/data:rw"
+  entrypoint:
+    build:
+      dockerfile: prod.Dockerfile
+      context: src/entrypoint
+    env_file: .env.production
+    ports:
+      - "443:443"
+  storage:
+    env_file: .env.production
+    volumes:
+      - "./prod/minio:/data:rw"

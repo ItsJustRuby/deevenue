@@ -1,0 +1,111 @@
+# https://taskfile.dev
+
+version: "3"
+
+tasks:
+  ci:lint:backend:
+    cmds:
+      - bash scripts/ci-lint-backend.sh
+
+  ci:lint:frontend:
+    deps: [codegen:openapi-lib]
+    cmds:
+      - task: codegen:tag-version
+      - bash scripts/ci-lint-frontend.sh
+
+  codegen:openapi-yaml:
+    aliases: [schema]
+    deps: [docker]
+    sources:
+      - src/backend/**/*
+    generates:
+      - development/openAPI/Deevenue.Api.json
+    cmds:
+      - bash scripts/codegen-openapi-yaml.sh
+    silent: true
+
+  codegen:openapi-lib:
+    aliases: [dev:schema]
+    deps: [codegen:openapi-yaml]
+    sources:
+      - development/openAPI/Deevenue.Api.json
+    cmds:
+      - bash scripts/codegen-openapi-client.sh
+    silent: true
+
+  codegen:tag-version:
+    cmds:
+      - bash scripts/tag-version.sh
+    silent: true
+
+  dev:check-frontend:
+    aliases: [check]
+    cmds:
+      - cd src/frontend && bun run check
+
+  dev:full:
+    aliases: [f]
+    deps: [codegen:openapi-lib]
+    cmds:
+      - task: codegen:tag-version
+      - bash scripts/dev.sh
+    silent: true
+
+  dev:lint:backend:
+    cmds:
+      - dotnet format --no-restore src/backend/
+
+  dev:lint:frontend:
+    cmds:
+      - task: codegen:tag-version
+      - bash scripts/ci-lint-frontend.sh
+
+  dev:migrate:
+    cmds:
+      - >
+        cd src/backend/Deevenue.Infrastructure &&
+        dotnet build &&
+        dotnet ef migrations add --output-dir ./Db/Migrations "{{.CLI_ARGS}}"
+
+  dev:run:
+    aliases: [r]
+    deps: [docker]
+    cmds:
+      - task: codegen:tag-version
+      - bash scripts/dev.sh
+    silent: true
+
+  deps:start-docker-daemon:
+    aliases: [docker]
+    cmds:
+      - bash scripts/start-docker-desktop.sh
+    silent: true
+
+  lint:openapi:
+    aliases: [dev:lint:openapi, ci:lint:openapi]
+    deps: [codegen:openapi-yaml]
+    sources:
+      - development/openAPI/Deevenue.Api.json
+    cmds:
+      - bunx @redocly/cli lint development/openAPI/Deevenue.Api.json
+
+  prod:build:
+    deps: [codegen:openapi-lib]
+    cmds:
+      - task: codegen:tag-version
+      - bash scripts/build-prod.sh
+      
+  prod:build-frontend:
+    deps: [codegen:openapi-lib]
+    cmds:
+      - task: codegen:tag-version
+      - bash scripts/build-prod.sh
+
+  prod:run:
+    deps: [docker, prod:build]
+    cmds:
+      - bash scripts/prod.sh
+
+  test:cover-backend:
+    cmds:
+      - bash scripts/tests-backend.sh

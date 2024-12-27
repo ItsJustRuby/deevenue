@@ -1,0 +1,28 @@
+services:
+  backend:
+    build:
+      dockerfile: prod.Dockerfile
+      context: src/backend
+    container_name: deevenue-backend
+    restart: always
+    depends_on:
+      - db
+      - storage
+  db:
+    image: postgres:17.1-alpine3.20
+    container_name: deevenue-db
+    restart: always
+    environment:
+      PGDATA: "/data"
+  storage:
+    build:
+      context: src/storage
+    container_name: deevenue-storage
+    restart: always
+  entrypoint:
+    image: caddy:2.9-alpine
+    container_name: deevenue-entrypoint
+    depends_on:
+      - backend
+      - db
+      - storage

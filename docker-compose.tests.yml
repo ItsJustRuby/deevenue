@@ -1,0 +1,9 @@
+services:
+  backend-tests:
+    build:
+      dockerfile: tests.Dockerfile
+      context: src/backend
+    container_name: deevenue-backend-tests
+    restart: no
+    volumes:
+      - ./coverage:/results
