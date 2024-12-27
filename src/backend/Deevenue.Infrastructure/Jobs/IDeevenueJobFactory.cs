@@ -7,7 +7,7 @@ namespace Deevenue.Infrastructure.Jobs;
 internal class JobKindNameAttribute(string Name) : Attribute { }
 #pragma warning restore CS9113 // Parameter is unread.
 
-internal interface IDeevenueJobFactory<TJob, TParameters> where TJob : IDeevenueJob
+internal interface IDeevenueJobFactory<in TJob, in TParameters> where TJob : IDeevenueJob
 {
     JobDataMap StoreParameters(TParameters parameters);
     string CreateIdentity(TParameters parameters);

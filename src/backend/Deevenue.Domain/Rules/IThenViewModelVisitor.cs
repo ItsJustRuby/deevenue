@@ -1,6 +1,6 @@
 namespace Deevenue.Domain.Rules;
 
-internal interface IThenViewModelVisitor<T>
+internal interface IThenViewModelVisitor<out T>
 {
     T VisitHasSpecificRatingThen(HasSpecificRatingThenViewModel then);
     T VisitFailThen();
