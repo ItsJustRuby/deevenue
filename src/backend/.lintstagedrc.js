@@ -1,3 +1,3 @@
 export default {
-    "**/*": "task dev:lint:backend --"
-}
+  "**/*": "task dev:lint:backend --",
+};
