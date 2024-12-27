@@ -10,7 +10,7 @@ public interface ITryAddResult
     T Accept<T>(ITryAddResultVisitor<T> visitor);
 }
 
-public interface ITryAddResultVisitor<T>
+public interface ITryAddResultVisitor<out T>
 {
     T VisitSuccess(Guid createdMediumId);
     T VisitUnusableMediaKind(string contentType);
