@@ -18,7 +18,7 @@ updates:
       docker:
         patterns:
           - "*"
-  
+
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
