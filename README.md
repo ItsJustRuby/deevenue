@@ -6,7 +6,6 @@ Deevenue is a small imagebooru with an emphasis on speed and customization.
 
 [![Lint](https://github.com/ItsJustRuby/deevenue/actions/workflows/lint.yml/badge.svg?branch=main)](https://github.com/ItsJustRuby/deevenue/actions/workflows/lint.yml)
 [![Tests](https://github.com/ItsJustRuby/deevenue/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/ItsJustRuby/deevenue/actions/workflows/tests.yml)
-[![Build](https://github.com/ItsJustRuby/deevenue/actions/workflows/pr-build.yml/badge.svg?branch=main)](https://github.com/ItsJustRuby/deevenue/actions/workflows/pr-build.yml)
 [![Deployment](https://github.com/ItsJustRuby/deevenue/actions/workflows/cd.yml/badge.svg?branch=main)](https://github.com/ItsJustRuby/deevenue/actions/workflows/cd.yml)
 
 ![Bun](https://img.shields.io/badge/Bun-%23000000.svg?style=for-the-badge&logo=bun&logoColor=white)
