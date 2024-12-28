@@ -12,12 +12,19 @@
   const randomRuleViolation = async (e: Event) => {
     e.preventDefault();
     await getRandomRuleViolation();
+    sidebar.setOpenMobile(false);
   };
+
+  const sidebar = Sidebar.useSidebar();
 </script>
 
 <Sidebar.Root>
   <Sidebar.Header>
-    <a class="self-center text-3xl font-bold" href="/"><span>Home</span></a>
+    <a
+      class="self-center text-3xl font-bold"
+      href="/"
+      onclick={() => sidebar.setOpenMobile(false)}><span>Home</span></a
+    >
   </Sidebar.Header>
   <Sidebar.Content>
     <Sidebar.Group>
@@ -46,7 +53,11 @@
           <Sidebar.MenuItem>
             <Sidebar.MenuButton>
               {#snippet child({ props })}
-                <a href="/tags" {...props}>
+                <a
+                  href="/tags"
+                  onclick={() => sidebar.setOpenMobile(false)}
+                  {...props}
+                >
                   <Tag />
                   <span>Tags</span>
                 </a>
@@ -56,7 +67,11 @@
           <Sidebar.MenuItem>
             <Sidebar.MenuButton>
               {#snippet child({ props })}
-                <a href="/rules" {...props}>
+                <a
+                  href="/rules"
+                  onclick={() => sidebar.setOpenMobile(false)}
+                  {...props}
+                >
                   <Gavel />
                   <span>Rules</span>
                 </a>
@@ -66,7 +81,11 @@
           <Sidebar.MenuItem>
             <Sidebar.MenuButton>
               {#snippet child({ props })}
-                <a href="/jobs" {...props}>
+                <a
+                  href="/jobs"
+                  onclick={() => sidebar.setOpenMobile(false)}
+                  {...props}
+                >
                   <HardHat />
                   <span>Jobs</span>
                 </a>
