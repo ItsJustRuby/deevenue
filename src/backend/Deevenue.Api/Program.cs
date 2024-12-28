@@ -84,6 +84,14 @@ builder.Services.AddQuartzServer(o =>
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddDeevenueApi();
 
+builder.WebHost.UseSentry(c =>
+{
+    c.Debug = Config.IsDev;
+    c.Dsn = Config.External.Sentry.Dsn;
+    c.Environment = Config.External.Sentry.Environment;
+    c.TracesSampleRate = Config.External.Sentry.TracesSampleRate;
+});
+
 var app = builder.Build();
 
 if (Config.IsDev)
