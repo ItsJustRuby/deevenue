@@ -99,7 +99,7 @@ tasks:
     deps: [codegen:openapi-lib]
     cmds:
       - task: codegen:tag-version
-      - bash scripts/build-prod.sh
+      - bash scripts/build-prod-frontend.sh
 
   prod:run:
     deps: [docker, prod:build]

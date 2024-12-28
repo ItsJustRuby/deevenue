@@ -16,6 +16,12 @@ public class HeaderAuthMiddleware(RequestDelegate next)
             return Task.CompletedTask;
         }
 
+        SentrySdk.ConfigureScope(scope =>
+        {
+            scope.User.Id = Config.Auth.HeaderValue;
+            scope.User.Username = Config.Auth.HeaderValue;
+        });
+
         return next(context);
     }
 }
