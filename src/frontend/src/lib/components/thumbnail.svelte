@@ -59,7 +59,9 @@
 <svelte:window {onresize} />
 
 <a href="/show/{id}">
-  <div class="transition duration-100 ease-in-out hover:scale-[104%]">
+  <div
+    class="select-none transition duration-100 ease-in-out hover:scale-[104%]"
+  >
     {#if mediaKind === "image"}
       <ThumbnailPicture prefix={`/thumbnail/${id}`} />
     {:else if mediaKind === "video"}
