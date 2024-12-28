@@ -32,8 +32,13 @@
 
 <svelte:window onkeypress={focusMe} />
 
-<form onsubmit={submit}>
+<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+<!-- This tabindex is necessary to not have this form become automatically
+ selected when unhiding the sidebar on mobile, making the keyboard pop up
+ every time. -->
+<form onsubmit={submit} tabindex={0}>
   <Input
+    class="border-none"
     type="text"
     placeholder="Search"
     bind:value={localSearchTerm}
