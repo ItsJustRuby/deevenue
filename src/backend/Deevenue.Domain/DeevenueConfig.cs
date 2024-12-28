@@ -10,6 +10,7 @@ public sealed class DeevenueConfig
 
     public required DeevenueMediaConfig Media { get; init; }
     public required DeevenueBackupConfig Backup { get; init; }
+    public required DeevenueExternalConfig External { get; init; }
 
     public required bool IsDev { get; init; }
 }
@@ -46,6 +47,16 @@ public sealed class DeevenueMediaConfig
 public sealed class DeevenueBackupConfig
 {
     public required string Directory { get; init; }
+}
+public sealed class DeevenueExternalConfig
+{
+    public required DeevenueSentryConfig Sentry { get; init; }
+}
+public sealed class DeevenueSentryConfig
+{
+    public required string Dsn { get; init; }
+    public required string Environment { get; init; }
+    public required double TracesSampleRate { get; init; }
 }
 
 public static class StaticConfig
@@ -85,6 +96,15 @@ public static class StaticConfig
             {
                 Directory = config["BACKUP_DIRECTORY"]!
             },
+            External = new DeevenueExternalConfig
+            {
+                Sentry = new DeevenueSentryConfig
+                {
+                    Dsn = config["EXTERNAL_SENTRY_DSN"]!,
+                    Environment = config["DEPLOYMENT"]!,
+                    TracesSampleRate = double.Parse(config["EXTERNAL_SENTRY_TRACES_SAMPLE_RATE"]!)
+                }
+            },
             IsDev = config["DEPLOYMENT"] == "dev"
         };
 
@@ -101,6 +121,7 @@ public static class StaticConfig
             RuleFor(c => c.Auth).SetValidator(new Auth());
             RuleFor(c => c.Media).SetValidator(new Media());
             RuleFor(c => c.Backup).SetValidator(new Backup());
+            RuleFor(c => c.External).SetValidator(new External());
         }
 
         private class Db : AbstractValidator<DeevenueDbConfig>
@@ -148,6 +169,24 @@ public static class StaticConfig
             public Backup()
             {
                 RuleFor(c => c.Directory).NotEmpty();
+            }
+        }
+
+        private class External : AbstractValidator<DeevenueExternalConfig>
+        {
+            public External()
+            {
+                RuleFor(c => c.Sentry).SetValidator(new Sentry());
+            }
+        }
+
+        private class Sentry : AbstractValidator<DeevenueSentryConfig>
+        {
+            public Sentry()
+            {
+                RuleFor(c => c.Dsn).NotEmpty();
+                RuleFor(c => c.Environment).NotEmpty();
+                RuleFor(c => c.TracesSampleRate).InclusiveBetween(0.0, 1.0);
             }
         }
     }
