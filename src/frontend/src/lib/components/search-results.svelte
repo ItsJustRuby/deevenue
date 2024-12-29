@@ -8,7 +8,7 @@
   import SearchResultsPagination from "./search-results-pagination.svelte";
   import Thumbnail from "./thumbnail.svelte";
   import SearchResultsPageSizeSelector from "./search-results-page-size-selector.svelte";
-  import { group } from "$lib/utils";
+  import { group } from "$lib/utility";
 
   let pageSize = $state(
     parseInt($page.url.searchParams.get("pageSize") ?? "10"),
@@ -91,7 +91,7 @@
 
 {#snippet headerAndFooter(searchResults: SearchResultsViewModel)}
   <div class="grid grid-cols-4">
-    <div class="col-span-4 col-start-1 row-start-1 justify-self-start">
+    <div class="col-span-3 col-start-1 row-start-1 justify-self-start">
       <SearchResultsPagination
         {searchResults}
         bind:selectedPageNumber={pageNumber}

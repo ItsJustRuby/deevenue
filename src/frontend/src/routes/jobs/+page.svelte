@@ -10,7 +10,7 @@
   import type { JobsViewModel } from "$lib/api/models";
   import { addTitlePart } from "$lib/title.svelte";
   import JobResults from "./job-results.svelte";
-  import { group } from "$lib/utils";
+  import { group } from "$lib/utility";
 
   let doAutoRefresh = $state<boolean>(true);
   let autoRefreshInterval = $state<ReturnType<typeof setInterval> | null>(null);
