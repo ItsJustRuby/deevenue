@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { MediumViewModel } from "$lib/api/models";
-  import { backendUrl, largeThumbnailMediaQuery } from "$lib/utils";
+  import { backendUrl, mediaQueries } from "$lib/utility";
+  import { MediaQuery } from "svelte/reactivity";
   import Spinner from "./spinner.svelte";
   import ThumbnailPicture from "./thumbnail-picture.svelte";
 
@@ -31,22 +32,10 @@
     videoRef!.currentTime = 0;
   };
 
-  const getVideoSrc = (windowParam: Window, id: string) => {
-    const size = windowParam.matchMedia(largeThumbnailMediaQuery).matches
-      ? "l"
-      : "s";
-    return backendUrl(`/thumbnail/${id}_${size}.webm`);
-  };
-
-  let videoSrc = $state(getVideoSrc(window, id));
-
-  $effect(() => {
-    videoSrc = getVideoSrc(window, id);
-  });
-
-  const onresize = () => {
-    videoSrc = getVideoSrc(window, id);
-  };
+  var mediaQuery = new MediaQuery(mediaQueries.largeThumbnail);
+  let videoSrc = $derived(
+    backendUrl(`/thumbnail/${id}_${mediaQuery.current ? "l" : "s"}.webm`),
+  );
 
   let missingThumbnailRef = $state<HTMLDivElement | null>(null);
 
@@ -55,8 +44,6 @@
     missingThumbnailRef?.classList.remove("hidden");
   };
 </script>
-
-<svelte:window {onresize} />
 
 <a href="/show/{id}">
   <div
@@ -80,7 +67,7 @@
           <!-- svelte-ignore a11y_mouse_events_have_key_events -->
           <!-- svelte-ignore a11y_no_static_element_interactions -->
           <div
-            class="grid hidden h-full w-full place-items-center bg-muted opacity-0"
+            class="bg-muted grid hidden h-full w-full place-items-center opacity-0"
             onmouseover={startVideo}
             onmouseleave={rewindVideo}
             bind:this={missingThumbnailRef}
