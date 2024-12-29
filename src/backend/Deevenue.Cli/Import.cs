@@ -109,6 +109,16 @@ internal class Import : AsyncCommand<Import.Settings>
                 return false;
             }
 
+            // Checking if the file is already known by filename-based MD5 hash
+            // before you even try to upload saves a lot of work hashing on the backend.
+            var hash = Path.GetFileNameWithoutExtension(mediumFilePath);
+            var existsResponse = await apiClient.ExecuteGetAsync(new RestRequest($"medium/withHash/{hash}"));
+            if (existsResponse.StatusCode == HttpStatusCode.OK)
+            {
+                Console.WriteLine("Hash {0} already known, skipping it", hash);
+                continue;
+            }
+
             // The filename won't be taggy and that's fine
             Console.WriteLine("Uploading file {0}", subDirectory);
 
@@ -116,12 +126,11 @@ internal class Import : AsyncCommand<Import.Settings>
                 new RestRequest("medium")
                 .AddFile("file", mediumFilePath, metadata.ContentType));
 
-            // Note: "break" in this case means "continue with this loop iteration, just exist this switch/case.
             switch (uploadResponse.StatusCode)
             {
                 case HttpStatusCode.Conflict:
                     Console.WriteLine("File at {0} already known, skipping it", subDirectory);
-                    break;
+                    continue;
                 case HttpStatusCode.OK:
                     break;
                 default:

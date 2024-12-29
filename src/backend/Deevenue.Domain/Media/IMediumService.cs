@@ -10,6 +10,7 @@ public interface IMediumService
     Task<PaginationViewModel<SearchResultViewModel>> PaginateAllAsync(PaginationParameters pagination);
     Task<bool> SetRatingAsync(Guid id, Rating rating);
     Task<ITryGetResult> TryGetAsync(Guid id);
+    Task<Guid?> TryGetByHashAsync(string hash);
 }
 
 public interface ITryGetResultVisitor<out T>
