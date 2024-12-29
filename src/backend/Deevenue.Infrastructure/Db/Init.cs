@@ -32,7 +32,8 @@ internal static class DbSetup
                 options.EnableSensitiveDataLogging();
         }
         dependencyInjection.Services.AddDbContext<DeevenueContext>(Setup);
-        dependencyInjection.Services.AddDbContextFactory<DeevenueContext>(Setup);
+        // TODO: Only Scoped in Integration tests!
+        dependencyInjection.Services.AddDbContextFactory<DeevenueContext>(Setup, lifetime: ServiceLifetime.Scoped);
 
         dependencyInjection.Services.AddTransient<IMediumRepository, MediumRepository>();
         dependencyInjection.Services.AddTransient<IMediumTagRepository, MediumTagRepository>();

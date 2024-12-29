@@ -105,3 +105,7 @@ app.MapControllers();
 app.UseInfrastructure();
 
 app.Run();
+
+// Explicitly make this type public so it can be used as generic type parameter in unit tests
+// TODO: Might not be necessary depending on xUnit autofixtures.
+public partial class Program { }

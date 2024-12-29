@@ -5,5 +5,15 @@ services:
       context: src/backend
     container_name: deevenue-backend-tests
     restart: no
+    stop_signal: SIGKILL
+    stdin_open: true
+    tty: true
+    # TODO: Apparently only necessary for Docker Desktop?
+    # Check if GitHub has problems with it or not.
+    environment:
+      - TESTCONTAINERS_HOST_OVERRIDE=host.docker.internal
     volumes:
       - ./coverage:/results
+      # Required for testcontainers
+      - $PWD:$PWD
+      - /var/run/docker.sock.raw:/var/run/docker.sock
