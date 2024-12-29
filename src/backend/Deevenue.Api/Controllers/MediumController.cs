@@ -33,6 +33,17 @@ public class MediumController(
         return tryGetResult.Accept(new TryGetResultVisitor(this));
     }
 
+    [HttpGet("withHash/{hash}", Name = "findMediumByHash")]
+    [ProducesResponseType(200, Type = typeof(MediumViewModel))]
+    [ProducesResponseType(404)]
+    public async Task<ActionResult> FindByHash(string hash)
+    {
+        var existingGuid = await mediumService.TryGetByHashAsync(hash);
+        if (existingGuid != null)
+            return Ok();
+        return NotFound();
+    }
+
     [HttpPost(Name = "uploadMedium")]
     [DisableRequestSizeLimit]
     [ProducesResponseType(200, Type = typeof(NotificationViewModel))]
