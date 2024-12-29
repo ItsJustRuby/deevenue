@@ -69,6 +69,8 @@ internal class MediumService(
         return new Success(viewModel);
     }
 
+    public Task<Guid?> TryGetByHashAsync(string hash) => mediaRepository.FindByHashAsync(hash);
+
     private class Success(MediumViewModel medium) : ITryGetResult
     {
         public T Accept<T>(ITryGetResultVisitor<T> visitor) => visitor.VisitSuccess(medium);
