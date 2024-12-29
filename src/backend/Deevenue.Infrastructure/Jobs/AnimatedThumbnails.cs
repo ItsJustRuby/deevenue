@@ -240,7 +240,7 @@ internal class AnimatedThumbnails(
         logger.LogDebug("SceneDetect stdout: {o}", sceneListingProcess.StandardOutput.ReadToEnd());
         var stderr = sceneListingProcess.StandardError.ReadToEnd();
         if (stderr.Length > 0)
-            logger.LogError("SceneDetect errors: {e}", stderr);
+            logger.LogWarning("SceneDetect errors: {stderr}", stderr);
         return outputDirectoryPath;
     }
 
@@ -277,7 +277,7 @@ internal class AnimatedThumbnails(
         logger.LogDebug("SceneDetect stdout: {o}", sceneListingProcess.StandardOutput.ReadToEnd());
         var stderr = sceneListingProcess.StandardError.ReadToEnd();
         if (stderr.Length > 0)
-            logger.LogError("SceneDetect errors: {e}", stderr);
+            logger.LogWarning("SceneDetect errors: {stderr}", stderr);
 
         // Note: Even if there are errors in stderr, that still means that SceneDetect
         // was a nice enough to just output at least 1 scene in scenes.csv,
