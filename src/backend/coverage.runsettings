@@ -6,6 +6,7 @@
         <Configuration>
           <Format>json,cobertura,lcov,opencover</Format>
           <Include>[Deevenue.*]*</Include>
+          <ExcludeByFile>**/Migrations/*.cs,</ExcludeByFile>
           <ExcludeByAttribute>Obsolete,GeneratedCodeAttribute,CompilerGeneratedAttribute</ExcludeByAttribute>
           <SkipAutoProps>true</SkipAutoProps>
           <ExcludeAssembliesWithoutSources>MissingAll,MissingAny,None</ExcludeAssembliesWithoutSources>
