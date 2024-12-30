@@ -14,17 +14,6 @@ using Xunit.Sdk;
 
 namespace Deevenue.Api.Tests;
 
-// TODO: https://dotnet.testcontainers.org/test_frameworks/xunit_net/
-// isn't maximally helpful, but maybe you can use *some* of it?
-
-// TODO: Connect ITestOutputHelper with ILogger? It would be great to have API
-// log output on failure.
-//builder.ConfigureServices(services =>
-//{
-//    services.AddLogging(logging => logging...)
-//})
-//
-// or add exception handler for 500s that is only registered on "tests"?
 public class ApiFixture : IDisposable
 {
     private bool disposedValue;

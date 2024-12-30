@@ -4,7 +4,7 @@ using FluentAssertions;
 
 namespace Deevenue.Api.Tests;
 
-public class MediumControllerUploadTests(ITestOutputHelper output)
+public class MediumControllerUploadTests
 {
     private HttpClient client = null!;
     private HttpResponseMessage response = null!;
