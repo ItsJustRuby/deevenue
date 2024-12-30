@@ -113,7 +113,7 @@ internal class Import : AsyncCommand<Import.Settings>
             // Checking if the file is already known by filename-based MD5 hash
             // before you even try to upload saves a lot of work hashing on the backend.
             var hash = Path.GetFileNameWithoutExtension(mediumFilePath);
-            var existsResponse = await apiClient.ExecuteGetAsync(new RestRequest($"medium/withHash/{hash}"));
+            var existsResponse = await apiClient.ExecuteGetAsync(new RestRequest($"medium/withHash/md5/{hash}"));
             if (existsResponse.StatusCode == HttpStatusCode.OK)
             {
                 Console.WriteLine("Hash {0} already known, skipping it", hash);
