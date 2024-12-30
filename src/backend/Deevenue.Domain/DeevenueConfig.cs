@@ -12,13 +12,14 @@ public sealed class DeevenueConfig
     public required DeevenueBackupConfig Backup { get; init; }
     public required DeevenueExternalConfig External { get; init; }
 
-    public required bool IsDev { get; init; }
+    public required IDeevenueEnvironment Environment { get; init; }
 }
 
-public sealed class DeevenueDbConfig
+public sealed record DeevenueDbConfig
 {
     public required string Host { get; init; }
     public required string Database { get; init; }
+    public required int Port { get; init; }
     public required string User { get; init; }
     public required string Password { get; init; }
 }
@@ -59,6 +60,14 @@ public sealed class DeevenueSentryConfig
     public required double TracesSampleRate { get; init; }
 }
 
+public interface IDeevenueEnvironment
+{
+    bool AllowsSensitiveDataLogging { get; }
+    bool OffersOpenApi { get; }
+    bool RequiresSentryIntegration { get; }
+    bool RequiresScopedDbContextFactoryLifetime { get; }
+}
+
 public static class StaticConfig
 {
     public static DeevenueConfig Config => instance!;
@@ -74,6 +83,7 @@ public static class StaticConfig
             {
                 Host = config["DB_HOST"]!,
                 Database = config["DB_DB"]!,
+                Port = int.Parse(config["DB_PORT"]!),
                 User = config["DB_USER"]!,
                 Password = config["DB_PASSWORD"]!,
             },
@@ -105,11 +115,51 @@ public static class StaticConfig
                     TracesSampleRate = double.Parse(config["EXTERNAL_SENTRY_TRACES_SAMPLE_RATE"]!)
                 }
             },
-            IsDev = config["DEPLOYMENT"] == "dev"
+            Environment = Environment.Match(config["DEPLOYMENT"])
         };
 
         new ConfigValidator().ValidateAndThrow(result);
         instance = result;
+    }
+
+    private static class Environment
+    {
+        private static readonly Env production = new(
+            AllowsSensitiveDataLogging: false,
+            OffersOpenApi: false,
+            RequiresSentryIntegration: true,
+            RequiresScopedDbContextFactoryLifetime: false
+        );
+        private static readonly Env development = new(
+            AllowsSensitiveDataLogging: true,
+            OffersOpenApi: true,
+            RequiresSentryIntegration: false,
+            RequiresScopedDbContextFactoryLifetime: false
+        );
+        private static readonly Env tests = new(
+            AllowsSensitiveDataLogging: true,
+            OffersOpenApi: true,
+            RequiresSentryIntegration: false,
+            RequiresScopedDbContextFactoryLifetime: true
+        );
+
+        public static IDeevenueEnvironment Match(string? configIdentifier)
+        {
+            return configIdentifier switch
+            {
+                "production" => production,
+                "development" => development,
+                "tests" => tests,
+                _ => throw new ArgumentOutOfRangeException(nameof(configIdentifier)),
+            };
+        }
+
+        private record Env(
+            bool AllowsSensitiveDataLogging,
+            bool OffersOpenApi,
+            bool RequiresSentryIntegration,
+            bool RequiresScopedDbContextFactoryLifetime
+        ) : IDeevenueEnvironment;
     }
 
     private class ConfigValidator : AbstractValidator<DeevenueConfig>
@@ -184,8 +234,9 @@ public static class StaticConfig
         {
             public Sentry()
             {
-                RuleFor(c => c.Dsn).NotEmpty();
                 RuleFor(c => c.Environment).NotEmpty();
+                // TODO: Consider making .Environment hella typesafe
+                RuleFor(c => c.Dsn).NotEmpty().When(c => c.Environment == "production");
                 RuleFor(c => c.TracesSampleRate).InclusiveBetween(0.0, 1.0);
             }
         }

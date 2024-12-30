@@ -2,4 +2,4 @@
 
 mkdir -p ./coverage
 rm -rf ./coverage/*
-docker compose -f docker-compose.tests.yml up --build
+MSYS_NO_PATHCONV=1 docker compose -f docker-compose.tests.yml up --build

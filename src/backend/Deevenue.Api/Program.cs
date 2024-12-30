@@ -86,7 +86,7 @@ builder.Services.AddDeevenueApi();
 
 builder.WebHost.UseSentry(c =>
 {
-    c.Debug = Config.IsDev;
+    c.Debug = Config.Environment.AllowsSensitiveDataLogging;
     c.Dsn = Config.External.Sentry.Dsn;
     c.Environment = Config.External.Sentry.Environment;
     c.TracesSampleRate = Config.External.Sentry.TracesSampleRate;
@@ -94,7 +94,7 @@ builder.WebHost.UseSentry(c =>
 
 var app = builder.Build();
 
-if (Config.IsDev)
+if (Config.Environment.OffersOpenApi)
     app.MapOpenApi();
 
 app.UseRequestDecompression();
