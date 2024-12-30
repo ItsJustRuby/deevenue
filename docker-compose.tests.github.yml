@@ -8,12 +8,8 @@ services:
     stop_signal: SIGKILL
     stdin_open: true
     tty: true
-    # Required for testcontainers iff using Docker Desktop
-    environment:
-      - TESTCONTAINERS_HOST_OVERRIDE=host.docker.internal
     volumes:
       - ./coverage:/results
       # Required for testcontainers
       - $PWD:$PWD
-      # Required for testcontainers iff using Docker Desktop
-      - /var/run/docker.sock.raw:/var/run/docker.sock
+      - /var/run/docker.sock:/var/run/docker.sock

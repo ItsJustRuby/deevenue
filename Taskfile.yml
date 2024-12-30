@@ -107,6 +107,7 @@ tasks:
       - bash scripts/prod.sh
 
   test:cover-backend:
-    aliases: [test]
+    deps: [docker]
+    aliases: [cover, test]
     cmds:
       - bash scripts/tests-backend.sh

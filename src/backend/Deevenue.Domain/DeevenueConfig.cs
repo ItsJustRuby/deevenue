@@ -12,13 +12,14 @@ public sealed class DeevenueConfig
     public required DeevenueBackupConfig Backup { get; init; }
     public required DeevenueExternalConfig External { get; init; }
 
-    public required bool IsDev { get; init; }
+    public required DeevenueEnvironment Environment { get; init; }
 }
 
-public sealed class DeevenueDbConfig
+public sealed record DeevenueDbConfig
 {
     public required string Host { get; init; }
     public required string Database { get; init; }
+    public required int Port { get; init; }
     public required string User { get; init; }
     public required string Password { get; init; }
 }
@@ -55,8 +56,53 @@ public sealed class DeevenueExternalConfig
 public sealed class DeevenueSentryConfig
 {
     public required string Dsn { get; init; }
-    public required string Environment { get; init; }
     public required double TracesSampleRate { get; init; }
+}
+
+public sealed record DeevenueEnvironment(
+    bool AllowsSensitiveDataLogging,
+    string Name,
+    bool OffersOpenApi,
+    bool RequiresSentryIntegration,
+    bool RequiresScopedDbContextFactoryLifetime,
+    bool SkipSchedulingJobs
+)
+{
+    private static readonly DeevenueEnvironment production = new(
+        AllowsSensitiveDataLogging: false,
+        Name: "production",
+        OffersOpenApi: false,
+        RequiresSentryIntegration: true,
+        RequiresScopedDbContextFactoryLifetime: false,
+        SkipSchedulingJobs: false
+    );
+    private static readonly DeevenueEnvironment development = new(
+        AllowsSensitiveDataLogging: true,
+        Name: "development",
+        OffersOpenApi: true,
+        RequiresSentryIntegration: false,
+        RequiresScopedDbContextFactoryLifetime: false,
+        SkipSchedulingJobs: false
+    );
+    private static readonly DeevenueEnvironment tests = new(
+        AllowsSensitiveDataLogging: true,
+        Name: "tests",
+        OffersOpenApi: true,
+        RequiresSentryIntegration: false,
+        RequiresScopedDbContextFactoryLifetime: true,
+        SkipSchedulingJobs: true
+    );
+
+    internal static DeevenueEnvironment Match(string? configIdentifier)
+    {
+        return configIdentifier switch
+        {
+            "production" => production,
+            "development" => development,
+            "tests" => tests,
+            _ => throw new ArgumentOutOfRangeException(nameof(configIdentifier)),
+        };
+    }
 }
 
 public static class StaticConfig
@@ -74,6 +120,7 @@ public static class StaticConfig
             {
                 Host = config["DB_HOST"]!,
                 Database = config["DB_DB"]!,
+                Port = int.Parse(config["DB_PORT"]!),
                 User = config["DB_USER"]!,
                 Password = config["DB_PASSWORD"]!,
             },
@@ -101,27 +148,26 @@ public static class StaticConfig
                 Sentry = new DeevenueSentryConfig
                 {
                     Dsn = config["EXTERNAL_SENTRY_DSN"]!,
-                    Environment = config["DEPLOYMENT"]!,
                     TracesSampleRate = double.Parse(config["EXTERNAL_SENTRY_TRACES_SAMPLE_RATE"]!)
                 }
             },
-            IsDev = config["DEPLOYMENT"] == "dev"
+            Environment = DeevenueEnvironment.Match(config["DEPLOYMENT"])
         };
 
-        new ConfigValidator().ValidateAndThrow(result);
+        new ConfigValidator(result).ValidateAndThrow(result);
         instance = result;
     }
 
     private class ConfigValidator : AbstractValidator<DeevenueConfig>
     {
-        public ConfigValidator()
+        public ConfigValidator(DeevenueConfig config)
         {
             RuleFor(c => c.Db).SetValidator(new Db());
             RuleFor(c => c.Storage).SetValidator(new Storage());
             RuleFor(c => c.Auth).SetValidator(new Auth());
             RuleFor(c => c.Media).SetValidator(new Media());
             RuleFor(c => c.Backup).SetValidator(new Backup());
-            RuleFor(c => c.External).SetValidator(new External());
+            RuleFor(c => c.External).SetValidator(new External(config));
         }
 
         private class Db : AbstractValidator<DeevenueDbConfig>
@@ -174,18 +220,17 @@ public static class StaticConfig
 
         private class External : AbstractValidator<DeevenueExternalConfig>
         {
-            public External()
+            public External(DeevenueConfig config)
             {
-                RuleFor(c => c.Sentry).SetValidator(new Sentry());
+                RuleFor(c => c.Sentry).SetValidator(new Sentry(config));
             }
         }
 
         private class Sentry : AbstractValidator<DeevenueSentryConfig>
         {
-            public Sentry()
+            public Sentry(DeevenueConfig config)
             {
-                RuleFor(c => c.Dsn).NotEmpty();
-                RuleFor(c => c.Environment).NotEmpty();
+                RuleFor(c => c.Dsn).NotEmpty().When(c => config.Environment.RequiresSentryIntegration);
                 RuleFor(c => c.TracesSampleRate).InclusiveBetween(0.0, 1.0);
             }
         }

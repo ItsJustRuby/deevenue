@@ -25,11 +25,12 @@ internal class MediumRepository(DeevenueContext dbContext) : IMediumRepository
         return true;
     }
 
-    public Task<Guid?> FindByHashAsync(string hash)
+    public async Task<Guid?> FindByHashAsync(string hash)
     {
-        return dbContext.MediumHashes
-            .FirstOrDefaultAsync(m => m.Hash == hash)
-            .ContinueWith(m => m.Result?.MediumId);
+        var potentialMatch = await dbContext.MediumHashes.FirstOrDefaultAsync(m => m.Hash == hash);
+        if (potentialMatch == null)
+            return null;
+        return potentialMatch.MediumId;
     }
 
     public async Task<IReadOnlySet<SmallMediumDocument>> GetAllSearchableAsync(bool isSfw)
@@ -68,7 +69,6 @@ internal class MediumRepository(DeevenueContext dbContext) : IMediumRepository
 
     public async Task<PaginateAllResult> PaginateAllAsync(PaginationParameters pagination, bool isSfw)
     {
-
         var baseQuery = dbContext.Media.AsQueryable();
 
         if (isSfw)

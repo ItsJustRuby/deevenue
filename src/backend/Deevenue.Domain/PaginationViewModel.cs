@@ -10,7 +10,7 @@ public sealed record PaginationViewModel<TItem>(
     int PageSize
 )
 {
-    private static readonly PaginationViewModel<TItem> empty = new([], 0, 0, 1);
+    private static readonly PaginationViewModel<TItem> empty = new([], 0, 1, 10);
 
     public static PaginationViewModel<TItem> Empty => empty;
 

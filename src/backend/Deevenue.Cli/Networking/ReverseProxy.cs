@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Net;
 using System.Text.Json;
+using Deevenue.Domain;
 using RestSharp;
 
 namespace Deevenue.Cli.Networking;
@@ -46,7 +47,7 @@ internal class ReverseProxy : IDisposable
         var awaitCorrectLogMessage = new TaskCompletionSource();
         caddyProcess.ErrorDataReceived += (object _, DataReceivedEventArgs e) =>
         {
-            var caddyLine = JsonSerializer.Deserialize<CaddyLine>(e.Data!, JsonSerializerSettings.Default);
+            var caddyLine = JsonSerializer.Deserialize<CaddyLine>(e.Data!, JsonSerialization.DefaultOptions);
             if (caddyLine!.From != null && caddyLine.To != null)
                 awaitCorrectLogMessage.SetResult();
         };

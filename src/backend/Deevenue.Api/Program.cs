@@ -19,6 +19,7 @@ builder.Services.AddControllers(c =>
 
     c.Filters.Add<FluentValidationExceptionFilter>();
 });
+builder.Services.AddProblemDetails();
 
 builder.Services.AddOpenApi(o =>
 {
@@ -86,18 +87,24 @@ builder.Services.AddDeevenueApi();
 
 builder.WebHost.UseSentry(c =>
 {
-    c.Debug = Config.IsDev;
+    c.Debug = Config.Environment.AllowsSensitiveDataLogging;
     c.Dsn = Config.External.Sentry.Dsn;
-    c.Environment = Config.External.Sentry.Environment;
+    c.Environment = Config.Environment.Name;
     c.TracesSampleRate = Config.External.Sentry.TracesSampleRate;
 });
 
+if (Config.Environment.AllowsSensitiveDataLogging)
+    builder.Services.AddExceptionHandler<VerboseExceptionHandler>();
+
 var app = builder.Build();
 
-if (Config.IsDev)
+if (Config.Environment.OffersOpenApi)
     app.MapOpenApi();
 
 app.UseRequestDecompression();
+
+if (Config.Environment.AllowsSensitiveDataLogging)
+    app.UseExceptionHandler();
 
 app.UseMiddleware<HeaderAuthMiddleware>();
 app.UseSession();
@@ -105,3 +112,6 @@ app.MapControllers();
 app.UseInfrastructure();
 
 app.Run();
+
+// Explicitly giving this type a name enables it to be used in test fixtures
+internal partial class Program { }

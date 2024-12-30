@@ -27,6 +27,15 @@
       "presentation": {
         "close": true
       }
+    },
+    {
+      "label": "test",
+      "type": "shell",
+      "command": "task test",
+      "problemMatcher": [],
+      "presentation": {
+        "close": true
+      }
     }
   ]
 }

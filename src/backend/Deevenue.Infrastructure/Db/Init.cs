@@ -15,9 +15,10 @@ internal static class DbSetup
         {
             Host = Config.Db.Host,
             Database = Config.Db.Database,
+            Port = Config.Db.Port,
             Username = Config.Db.User,
             Password = Config.Db.Password,
-            IncludeErrorDetail = Config.IsDev
+            IncludeErrorDetail = Config.Environment.AllowsSensitiveDataLogging
         };
 
         void Setup(DbContextOptionsBuilder options)
@@ -28,11 +29,15 @@ internal static class DbSetup
                 o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
 
             });
-            if (Config.IsDev)
+            if (Config.Environment.AllowsSensitiveDataLogging)
                 options.EnableSensitiveDataLogging();
         }
         dependencyInjection.Services.AddDbContext<DeevenueContext>(Setup);
-        dependencyInjection.Services.AddDbContextFactory<DeevenueContext>(Setup);
+        dependencyInjection.Services.AddDbContextFactory<DeevenueContext>(
+            Setup,
+            lifetime: Config.Environment.RequiresScopedDbContextFactoryLifetime
+                ? ServiceLifetime.Scoped
+                : ServiceLifetime.Singleton);
 
         dependencyInjection.Services.AddTransient<IMediumRepository, MediumRepository>();
         dependencyInjection.Services.AddTransient<IMediumTagRepository, MediumTagRepository>();

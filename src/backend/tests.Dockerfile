@@ -3,6 +3,16 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 WORKDIR /src
 RUN dotnet tool install dotnet-reportgenerator-globaltool --tool-path /src/reportgenerator
 
+RUN apt-get -y update && \
+    apt-get install -y --no-install-recommends \
+    ffmpeg=7:5.1.6-0+deb12u1 \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+ENV PATH="$PATH:/root/.local/bin"
+RUN uv python install 3.12 \
+    && uv tool install "scenedetect[opencv-headless]==0.6.5"
+
 # Copy project and solution files separately to restore dependencies
 COPY --link Deevenue.Api/Deevenue.Api.csproj ./Deevenue.Api/
 COPY --link Deevenue.Infrastructure/Deevenue.Infrastructure.csproj ./Deevenue.Infrastructure/
