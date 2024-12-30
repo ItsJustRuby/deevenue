@@ -88,7 +88,7 @@ builder.WebHost.UseSentry(c =>
 {
     c.Debug = Config.Environment.AllowsSensitiveDataLogging;
     c.Dsn = Config.External.Sentry.Dsn;
-    c.Environment = Config.External.Sentry.Environment;
+    c.Environment = Config.Environment.Name;
     c.TracesSampleRate = Config.External.Sentry.TracesSampleRate;
 });
 

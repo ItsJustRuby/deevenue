@@ -56,13 +56,13 @@ public sealed class DeevenueExternalConfig
 public sealed class DeevenueSentryConfig
 {
     public required string Dsn { get; init; }
-    public required string Environment { get; init; }
     public required double TracesSampleRate { get; init; }
 }
 
 public interface IDeevenueEnvironment
 {
     bool AllowsSensitiveDataLogging { get; }
+    string Name { get; }
     bool OffersOpenApi { get; }
     bool RequiresSentryIntegration { get; }
     bool RequiresScopedDbContextFactoryLifetime { get; }
@@ -111,14 +111,13 @@ public static class StaticConfig
                 Sentry = new DeevenueSentryConfig
                 {
                     Dsn = config["EXTERNAL_SENTRY_DSN"]!,
-                    Environment = config["DEPLOYMENT"]!,
                     TracesSampleRate = double.Parse(config["EXTERNAL_SENTRY_TRACES_SAMPLE_RATE"]!)
                 }
             },
             Environment = Environment.Match(config["DEPLOYMENT"])
         };
 
-        new ConfigValidator().ValidateAndThrow(result);
+        new ConfigValidator(result).ValidateAndThrow(result);
         instance = result;
     }
 
@@ -126,18 +125,21 @@ public static class StaticConfig
     {
         private static readonly Env production = new(
             AllowsSensitiveDataLogging: false,
+            Name: "production",
             OffersOpenApi: false,
             RequiresSentryIntegration: true,
             RequiresScopedDbContextFactoryLifetime: false
         );
         private static readonly Env development = new(
             AllowsSensitiveDataLogging: true,
+            Name: "development",
             OffersOpenApi: true,
             RequiresSentryIntegration: false,
             RequiresScopedDbContextFactoryLifetime: false
         );
         private static readonly Env tests = new(
             AllowsSensitiveDataLogging: true,
+            Name: "tests",
             OffersOpenApi: true,
             RequiresSentryIntegration: false,
             RequiresScopedDbContextFactoryLifetime: true
@@ -156,6 +158,7 @@ public static class StaticConfig
 
         private record Env(
             bool AllowsSensitiveDataLogging,
+            string Name,
             bool OffersOpenApi,
             bool RequiresSentryIntegration,
             bool RequiresScopedDbContextFactoryLifetime
@@ -164,14 +167,14 @@ public static class StaticConfig
 
     private class ConfigValidator : AbstractValidator<DeevenueConfig>
     {
-        public ConfigValidator()
+        public ConfigValidator(DeevenueConfig config)
         {
             RuleFor(c => c.Db).SetValidator(new Db());
             RuleFor(c => c.Storage).SetValidator(new Storage());
             RuleFor(c => c.Auth).SetValidator(new Auth());
             RuleFor(c => c.Media).SetValidator(new Media());
             RuleFor(c => c.Backup).SetValidator(new Backup());
-            RuleFor(c => c.External).SetValidator(new External());
+            RuleFor(c => c.External).SetValidator(new External(config));
         }
 
         private class Db : AbstractValidator<DeevenueDbConfig>
@@ -224,19 +227,17 @@ public static class StaticConfig
 
         private class External : AbstractValidator<DeevenueExternalConfig>
         {
-            public External()
+            public External(DeevenueConfig config)
             {
-                RuleFor(c => c.Sentry).SetValidator(new Sentry());
+                RuleFor(c => c.Sentry).SetValidator(new Sentry(config));
             }
         }
 
         private class Sentry : AbstractValidator<DeevenueSentryConfig>
         {
-            public Sentry()
+            public Sentry(DeevenueConfig config)
             {
-                RuleFor(c => c.Environment).NotEmpty();
-                // TODO: Consider making .Environment hella typesafe
-                RuleFor(c => c.Dsn).NotEmpty().When(c => c.Environment == "production");
+                RuleFor(c => c.Dsn).NotEmpty().When(c => config.Environment.RequiresSentryIntegration);
                 RuleFor(c => c.TracesSampleRate).InclusiveBetween(0.0, 1.0);
             }
         }
