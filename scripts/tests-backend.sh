@@ -1,4 +1,5 @@
 #!/bin/sh
+set -e
 
 mkdir -p ./coverage
 rm -rf ./coverage/*

@@ -23,6 +23,8 @@ namespace Deevenue.Api.Tests;
 //{
 //    services.AddLogging(logging => logging...)
 //})
+//
+// or add exception handler for 500s that is only registered on "tests"?
 public class ApiFixture : IDisposable
 {
     private bool disposedValue;
