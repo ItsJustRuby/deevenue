@@ -6,5 +6,3 @@ coverage:
     patch:
       default:
         informational: true
-fixes:
-  - "/src::src/backend"

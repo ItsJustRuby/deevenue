@@ -15,7 +15,10 @@ public class MediumControllerUploadTests
         // TODO: Check for Notification and associated header
     }
 
-    // TODO: Turn this into a cool [WithFile("placeholder.jpg")] fixture.
+    // TODO: Turn this into a cool [WithFile("placeholder.jpg")] fixture
+    // that gets you its Guid as parameter. Maybe a Factory as Assembly fixture?
+    // Just ensure that that factory keeps track of what is already uploaded
+    // (or make it use the hash-based duplicate check).
     private async Task WhenUploadingAsync(string fileName)
     {
         var assembly = typeof(MediumControllerUploadTests).Assembly;
