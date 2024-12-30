@@ -34,7 +34,7 @@ public class MediumController(
     }
 
     [HttpGet("withHash/md5/{hash}", Name = "findMediumByMD5Hash")]
-    [ProducesResponseType(200, Type = typeof(MediumViewModel))]
+    [ProducesResponseType(200)]
     [ProducesResponseType(404)]
     public async Task<ActionResult> FindByHash(string hash)
     {

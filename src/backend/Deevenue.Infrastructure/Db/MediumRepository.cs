@@ -68,7 +68,6 @@ internal class MediumRepository(DeevenueContext dbContext) : IMediumRepository
 
     public async Task<PaginateAllResult> PaginateAllAsync(PaginationParameters pagination, bool isSfw)
     {
-
         var baseQuery = dbContext.Media.AsQueryable();
 
         if (isSfw)

@@ -37,6 +37,5 @@ public class SessionControllerTests
 }
 
 public class JobControllerTests { }
-public class MediumControllerTests { }
 public class RuleControllerTests { }
 public class TagControllerTests { }
