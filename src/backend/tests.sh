@@ -1,4 +1,6 @@
 #!/bin/sh
+set -e
+
 mkdir -p /results/coverage
 
 dotnet test --collect="XPlat Code Coverage" \
