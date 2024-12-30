@@ -15,8 +15,8 @@ services:
     environment:
       PGDATA: "/data"
   storage:
-    build:
-      context: src/storage
+    image: minio/minio:RELEASE.2024-11-07T00-52-20Z
+    command: ["server", "/data", "--console-address", ":9001"]
     container_name: deevenue-storage
     restart: always
   entrypoint:
