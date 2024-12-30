@@ -33,6 +33,7 @@ public class MediumController(
         return tryGetResult.Accept(new TryGetResultVisitor(this));
     }
 
+    // TODO: Beans, this is an ambiguous path with /medium/{id}/thumbnailsheets alright.
     [HttpGet("withHash/{hash}", Name = "findMediumByHash")]
     [ProducesResponseType(200, Type = typeof(MediumViewModel))]
     [ProducesResponseType(404)]

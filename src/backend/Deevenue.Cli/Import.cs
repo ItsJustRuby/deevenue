@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Text.Json;
 using Deevenue.Cli.Networking;
+using Deevenue.Domain;
 using RestSharp;
 using Spectre.Console.Cli;
 
@@ -101,7 +102,7 @@ internal class Import : AsyncCommand<Import.Settings>
             var metadataFilePath = files.Where(f => Path.GetFileName(f) == "metadata.json").Single();
 
             using var metadataFile = File.OpenRead(metadataFilePath);
-            var metadata = await JsonSerializer.DeserializeAsync<MetadataFile>(metadataFile, JsonSerializerSettings.Default);
+            var metadata = await JsonSerializer.DeserializeAsync<MetadataFile>(metadataFile, JsonSerialization.DefaultOptions);
 
             if (metadata == null)
             {
@@ -137,7 +138,7 @@ internal class Import : AsyncCommand<Import.Settings>
                     throw new Exception($"Failed to upload Medium, got status code {uploadResponse.StatusCode}");
             }
 
-            var notification = JsonSerializer.Deserialize<Notification>(uploadResponse.Content!, JsonSerializerSettings.Default);
+            var notification = JsonSerializer.Deserialize<Notification>(uploadResponse.Content!, JsonSerialization.DefaultOptions);
             var mediumId = notification!.Contents.SingleOrDefault(p => p.Id != null)?.Id;
 
             if (mediumId == null)
@@ -168,7 +169,7 @@ internal class Import : AsyncCommand<Import.Settings>
             return false;
         }
         using var tagsFile = File.OpenRead(tagsFilePath);
-        var tagsObj = await JsonSerializer.DeserializeAsync<TagsFile>(tagsFile, JsonSerializerSettings.Default);
+        var tagsObj = await JsonSerializer.DeserializeAsync<TagsFile>(tagsFile, JsonSerialization.DefaultOptions);
 
         if (tagsObj == null)
         {

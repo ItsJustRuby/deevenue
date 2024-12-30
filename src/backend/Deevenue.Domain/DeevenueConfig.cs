@@ -12,7 +12,7 @@ public sealed class DeevenueConfig
     public required DeevenueBackupConfig Backup { get; init; }
     public required DeevenueExternalConfig External { get; init; }
 
-    public required IDeevenueEnvironment Environment { get; init; }
+    public required DeevenueEnvironment Environment { get; init; }
 }
 
 public sealed record DeevenueDbConfig
@@ -59,13 +59,50 @@ public sealed class DeevenueSentryConfig
     public required double TracesSampleRate { get; init; }
 }
 
-public interface IDeevenueEnvironment
+public sealed record DeevenueEnvironment(
+    bool AllowsSensitiveDataLogging,
+    string Name,
+    bool OffersOpenApi,
+    bool RequiresSentryIntegration,
+    bool RequiresScopedDbContextFactoryLifetime,
+    bool SkipSchedulingJobs
+)
 {
-    bool AllowsSensitiveDataLogging { get; }
-    string Name { get; }
-    bool OffersOpenApi { get; }
-    bool RequiresSentryIntegration { get; }
-    bool RequiresScopedDbContextFactoryLifetime { get; }
+    private static readonly DeevenueEnvironment production = new(
+        AllowsSensitiveDataLogging: false,
+        Name: "production",
+        OffersOpenApi: false,
+        RequiresSentryIntegration: true,
+        RequiresScopedDbContextFactoryLifetime: false,
+        SkipSchedulingJobs: false
+    );
+    private static readonly DeevenueEnvironment development = new(
+        AllowsSensitiveDataLogging: true,
+        Name: "development",
+        OffersOpenApi: true,
+        RequiresSentryIntegration: false,
+        RequiresScopedDbContextFactoryLifetime: false,
+        SkipSchedulingJobs: false
+    );
+    private static readonly DeevenueEnvironment tests = new(
+        AllowsSensitiveDataLogging: true,
+        Name: "tests",
+        OffersOpenApi: true,
+        RequiresSentryIntegration: false,
+        RequiresScopedDbContextFactoryLifetime: true,
+        SkipSchedulingJobs: true
+    );
+
+    internal static DeevenueEnvironment Match(string? configIdentifier)
+    {
+        return configIdentifier switch
+        {
+            "production" => production,
+            "development" => development,
+            "tests" => tests,
+            _ => throw new ArgumentOutOfRangeException(nameof(configIdentifier)),
+        };
+    }
 }
 
 public static class StaticConfig
@@ -114,55 +151,11 @@ public static class StaticConfig
                     TracesSampleRate = double.Parse(config["EXTERNAL_SENTRY_TRACES_SAMPLE_RATE"]!)
                 }
             },
-            Environment = Environment.Match(config["DEPLOYMENT"])
+            Environment = DeevenueEnvironment.Match(config["DEPLOYMENT"])
         };
 
         new ConfigValidator(result).ValidateAndThrow(result);
         instance = result;
-    }
-
-    private static class Environment
-    {
-        private static readonly Env production = new(
-            AllowsSensitiveDataLogging: false,
-            Name: "production",
-            OffersOpenApi: false,
-            RequiresSentryIntegration: true,
-            RequiresScopedDbContextFactoryLifetime: false
-        );
-        private static readonly Env development = new(
-            AllowsSensitiveDataLogging: true,
-            Name: "development",
-            OffersOpenApi: true,
-            RequiresSentryIntegration: false,
-            RequiresScopedDbContextFactoryLifetime: false
-        );
-        private static readonly Env tests = new(
-            AllowsSensitiveDataLogging: true,
-            Name: "tests",
-            OffersOpenApi: true,
-            RequiresSentryIntegration: false,
-            RequiresScopedDbContextFactoryLifetime: true
-        );
-
-        public static IDeevenueEnvironment Match(string? configIdentifier)
-        {
-            return configIdentifier switch
-            {
-                "production" => production,
-                "development" => development,
-                "tests" => tests,
-                _ => throw new ArgumentOutOfRangeException(nameof(configIdentifier)),
-            };
-        }
-
-        private record Env(
-            bool AllowsSensitiveDataLogging,
-            string Name,
-            bool OffersOpenApi,
-            bool RequiresSentryIntegration,
-            bool RequiresScopedDbContextFactoryLifetime
-        ) : IDeevenueEnvironment;
     }
 
     private class ConfigValidator : AbstractValidator<DeevenueConfig>
