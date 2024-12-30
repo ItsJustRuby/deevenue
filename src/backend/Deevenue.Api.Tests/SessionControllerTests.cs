@@ -19,6 +19,7 @@ public class SessionControllerTests
         viewModel.IsSfw.Should().BeTrue();
     }
 
+    // TODO: Build a NSFW/SFW (auto)fixture
     [Theory]
     [InlineData(true)]
     [InlineData(false)]
@@ -34,3 +35,8 @@ public class SessionControllerTests
         result.StatusCode.Should().Be(HttpStatusCode.OK);
     }
 }
+
+public class JobControllerTests { }
+public class MediumControllerTests { }
+public class RuleControllerTests { }
+public class TagControllerTests { }
