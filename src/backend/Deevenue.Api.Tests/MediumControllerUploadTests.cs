@@ -18,12 +18,7 @@ public class MediumControllerUploadTests(ITestOutputHelper output)
     public async Task Upload_CanSucceed(string fileName)
     {
         await WhenUploadingAsync(fileName);
-        output.WriteLine($"{response}");
-        output.WriteLine($"{response.StatusCode}");
-        output.WriteLine($"{response.Headers}");
-
-        // TODO: Uncomment me
-        //response.StatusCode.Should().Be(HttpStatusCode.OK);
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         response.Headers.Should().ContainKey("X-Deevenue-Schema");
         var headerValues = response.Headers.GetValues("X-Deevenue-Schema");
@@ -41,7 +36,7 @@ public class MediumControllerUploadTests(ITestOutputHelper output)
 
     private async Task ThenMediumFileExists(Guid mediumId)
     {
-        var response = await client.GetAsync($"/file/{mediumId}");
+        var response = await client.GetAsync($"/file/{mediumId}", TestContext.Current.CancellationToken);
         response.Should().HaveStatusCode(HttpStatusCode.OK);
     }
 
@@ -73,6 +68,6 @@ public class MediumControllerUploadTests(ITestOutputHelper output)
             { streamContent, "file", fileName }
         };
 
-        response = await client.PostAsync("/medium", formContent);
+        response = await client.PostAsync("/medium", formContent, TestContext.Current.CancellationToken);
     }
 }

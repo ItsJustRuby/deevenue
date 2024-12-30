@@ -19,6 +19,7 @@ builder.Services.AddControllers(c =>
 
     c.Filters.Add<FluentValidationExceptionFilter>();
 });
+builder.Services.AddProblemDetails();
 
 builder.Services.AddOpenApi(o =>
 {
@@ -92,12 +93,18 @@ builder.WebHost.UseSentry(c =>
     c.TracesSampleRate = Config.External.Sentry.TracesSampleRate;
 });
 
+if (Config.Environment.AllowsSensitiveDataLogging)
+    builder.Services.AddExceptionHandler<VerboseExceptionHandler>();
+
 var app = builder.Build();
 
 if (Config.Environment.OffersOpenApi)
     app.MapOpenApi();
 
 app.UseRequestDecompression();
+
+if (Config.Environment.AllowsSensitiveDataLogging)
+    app.UseExceptionHandler();
 
 app.UseMiddleware<HeaderAuthMiddleware>();
 app.UseSession();
