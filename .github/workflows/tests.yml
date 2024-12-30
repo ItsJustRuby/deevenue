@@ -30,4 +30,3 @@ jobs:
         uses: codecov/codecov-action@v5
         with:
           directory: coverage/report
-          files: Cobertura.xml
