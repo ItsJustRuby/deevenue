@@ -19,10 +19,6 @@ jobs:
             context: "src/backend"
             file: "src/backend/prod.Dockerfile"
 
-          - name: "storage"
-            context: "src/storage"
-            file: "src/storage/Dockerfile"
-
           - name: "entrypoint"
             context: "src/entrypoint"
             file: "src/entrypoint/Dockerfile"
