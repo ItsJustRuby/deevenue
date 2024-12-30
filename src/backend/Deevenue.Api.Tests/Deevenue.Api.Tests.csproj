@@ -8,16 +8,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="assets\medium_to_be_uploaded.png" />
-    <None Remove="assets\placeholder.jpg" />
+    <None Remove="assets\square.png" />
+    <None Remove="assets\1234 - foo bar.jpg" />
     <None Remove="assets\tall.png" />
     <None Remove="assets\tiny_video.mp4" />
     <None Remove="assets\wide.png" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="assets\medium_to_be_uploaded.png" />
-    <EmbeddedResource Include="assets\placeholder.jpg" />
+    <EmbeddedResource Include="assets\square.png" />
+    <EmbeddedResource Include="assets\1234 - foo bar.jpg" />
     <EmbeddedResource Include="assets\tall.png" />
     <EmbeddedResource Include="assets\tiny_video.mp4" />
     <EmbeddedResource Include="assets\wide.png" />

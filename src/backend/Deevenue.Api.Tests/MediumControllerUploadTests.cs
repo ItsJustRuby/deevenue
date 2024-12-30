@@ -1,18 +1,43 @@
 ﻿using System.Net;
+using System.Net.Http.Headers;
 using FluentAssertions;
 
 namespace Deevenue.Api.Tests;
 
 public class MediumControllerUploadTests
 {
+    private HttpClient client = null!;
     private HttpResponseMessage response = null!;
 
-    [Fact]
-    public async Task Upload_CanSucceed()
+    [Theory]
+    [InlineData("1234 - foo bar.jpg")]
+    [InlineData("square.png")]
+    [InlineData("tall.png")]
+    [InlineData("tiny_video.mp4")]
+    [InlineData("wide.png")]
+    public async Task Upload_CanSucceed(string fileName)
     {
-        await WhenUploadingAsync("placeholder.jpg");
+        await WhenUploadingAsync(fileName);
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        // TODO: Check for Notification and associated header
+
+        response.Headers.Should().ContainKey("X-Deevenue-Schema");
+        var headerValues = response.Headers.GetValues("X-Deevenue-Schema");
+        headerValues.Should().HaveCount(1);
+        headerValues.Single().Should().Be("Notification");
+
+        var notification = await response.JsonAsync<NotificationViewModel>();
+        notification.Contents.Should().Contain(c => c is Entity);
+        var contentPart = (Entity)notification.Contents.Single(c => c is Entity);
+        contentPart.EntityKind.Should().Be(EntityKind.Medium);
+
+        var mediumId = contentPart.Id;
+        await ThenMediumFileExists(mediumId);
+    }
+
+    private async Task ThenMediumFileExists(Guid mediumId)
+    {
+        var response = await client.GetAsync($"/file/{mediumId}");
+        response.Should().HaveStatusCode(HttpStatusCode.OK);
     }
 
     // TODO: Turn this into a cool [WithFile("placeholder.jpg")] fixture
@@ -26,10 +51,23 @@ public class MediumControllerUploadTests
         var matchingResourceName = availableResourceNames.Single(n => n.EndsWith(fileName));
         using var resourceStream = assembly.GetManifestResourceStream(matchingResourceName)!;
 
-        var client = ApiFixture.Instance.CreateClient();
-        response = await client.PostAsync("/medium", new MultipartFormDataContent
+        client = ApiFixture.Instance.CreateClient();
+
+        var streamContent = new StreamContent(resourceStream);
+        var contentTypesByExtension = new Dictionary<string, string>
         {
-            { new StreamContent(resourceStream), "file", fileName }
-        });
+            [".jpg"] = "image/jpeg",
+            [".png"] = "image/png",
+            [".mp4"] = "video/mp4",
+        };
+        streamContent.Headers.ContentType =
+            new MediaTypeHeaderValue(contentTypesByExtension[Path.GetExtension(fileName)]);
+
+        var formContent = new MultipartFormDataContent
+        {
+            { streamContent, "file", fileName }
+        };
+
+        response = await client.PostAsync("/medium", formContent);
     }
 }

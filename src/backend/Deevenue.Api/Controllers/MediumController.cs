@@ -201,6 +201,7 @@ public class MediumController(
 
         public NotificationViewModel VisitUnusableMediaKind(string contentType)
         {
+            controller.Response.StatusCode = 400;
             return Notifications.CreateBuilder(NotificationLevel.Error)
                 .WithText($"Unknown Content type \"{contentType}\".")
                 .Build();
