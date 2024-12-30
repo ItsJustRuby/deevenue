@@ -11,9 +11,7 @@ public class SessionController : DeevenueApiControllerBase
     public SessionViewModel Update([FromBody] SessionUpdateParameters sessionUpdateParameters)
     {
         var session = HttpContext.DeevenueSession();
-        if (sessionUpdateParameters.IsSfw.HasValue)
-            session.IsSfw = sessionUpdateParameters.IsSfw.Value;
-
+        session.IsSfw = sessionUpdateParameters.IsSfw;
         return new SessionViewModel(session.IsSfw);
     }
 
@@ -28,6 +26,6 @@ public class SessionController : DeevenueApiControllerBase
 
     public class SessionUpdateParameters
     {
-        public bool? IsSfw { get; set; }
+        public bool IsSfw { get; set; }
     }
 }

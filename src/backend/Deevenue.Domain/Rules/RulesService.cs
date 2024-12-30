@@ -108,7 +108,7 @@ internal class RulesService(
     {
         try
         {
-            return await JsonSerializer.DeserializeAsync<RulesViewModel>(stream, deserializationOptions);
+            return await JsonSerializer.DeserializeAsync<RulesViewModel>(stream, JsonSerialization.DefaultOptions);
         }
         catch (JsonException)
         {
@@ -124,12 +124,5 @@ internal class RulesService(
         new RulesViewModelValidator().ValidateAndThrow(viewModel);
         return true;
     }
-
-    private static readonly JsonSerializerOptions deserializationOptions = new()
-    {
-        // Allow the type discriminator to not be the first key (!!)
-        AllowOutOfOrderMetadataProperties = true,
-        PropertyNameCaseInsensitive = true,
-    };
 
 }

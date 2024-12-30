@@ -33,8 +33,8 @@ public class MediumController(
         return tryGetResult.Accept(new TryGetResultVisitor(this));
     }
 
-    [HttpGet("withHash/{hash}", Name = "findMediumByHash")]
-    [ProducesResponseType(200, Type = typeof(MediumViewModel))]
+    [HttpGet("withHash/md5/{hash}", Name = "findMediumByMD5Hash")]
+    [ProducesResponseType(200)]
     [ProducesResponseType(404)]
     public async Task<ActionResult> FindByHash(string hash)
     {
@@ -201,6 +201,7 @@ public class MediumController(
 
         public NotificationViewModel VisitUnusableMediaKind(string contentType)
         {
+            controller.Response.StatusCode = 400;
             return Notifications.CreateBuilder(NotificationLevel.Error)
                 .WithText($"Unknown Content type \"{contentType}\".")
                 .Build();

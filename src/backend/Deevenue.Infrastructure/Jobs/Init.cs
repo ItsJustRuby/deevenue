@@ -29,6 +29,9 @@ internal static class JobsInit
         var schedulerFactory = services.GetRequiredService<ISchedulerFactory>();
         var scheduler = schedulerFactory.GetScheduler().Result;
 
+        if (Config.Environment.SkipSchedulingJobs)
+            return;
+
         foreach (var jobType in new List<Type>([typeof(ThumbnailSheetCleanupJob), typeof(JobResultCleanupJob)]))
         {
             // Once on startup

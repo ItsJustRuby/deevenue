@@ -29,5 +29,5 @@ jobs:
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
         with:
-          directory: coverage/report
-          files: lcov.info
+          directory: ./coverage/report
+          files: ./coverage/report/lcov.info
