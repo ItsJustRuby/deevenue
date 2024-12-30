@@ -1,4 +1,5 @@
 <script lang="ts">
+  import * as Sidebar from "$lib/components/ui/sidebar/index.js";
   import { Input } from "$lib/components/ui/input/index.js";
   import { goto } from "$app/navigation";
   import { searchState } from "$lib/store.svelte";
@@ -11,8 +12,12 @@
     localSearchTerm = searchState.searchTerm;
   });
 
+  const sidebar = Sidebar.useSidebar();
+
   const submit = async (e: SubmitEvent) => {
     e.preventDefault();
+    sidebar.setOpenMobile(false);
+
     const redirectTarget =
       localSearchTerm === ""
         ? "/"
