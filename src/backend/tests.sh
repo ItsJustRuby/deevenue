@@ -7,5 +7,5 @@ dotnet test --collect="XPlat Code Coverage" \
 
 ./reportgenerator/reportgenerator \
     "-reports:/results/coverage/*/*.xml" \
-     "-reporttypes:lcov" \
+     "-reporttypes:Cobertura" \
      "-targetdir:/results/report"
