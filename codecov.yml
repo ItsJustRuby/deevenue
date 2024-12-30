@@ -7,4 +7,6 @@ coverage:
       default:
         informational: true
 fixes:
-  - "/src/::src/backend/"
+  - "/src::/src/backend"
+codecov:
+  disable_default_path_fixes: true
