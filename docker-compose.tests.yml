@@ -10,8 +10,8 @@ services:
     tty: true
     # TODO: Apparently only necessary for Docker Desktop?
     # Check if GitHub has problems with it or not.
-    environment:
-      - TESTCONTAINERS_HOST_OVERRIDE=host.docker.internal
+    # environment:
+    #   - TESTCONTAINERS_HOST_OVERRIDE=host.docker.internal
     volumes:
       - ./coverage:/results
       # Required for testcontainers
