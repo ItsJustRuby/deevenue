@@ -1,4 +1,4 @@
-﻿using Deevenue.Api.Tests;
+﻿using Deevenue.Api.Tests.Framework;
 using Deevenue.Infrastructure.Db;
 using DotNet.Testcontainers.Builders;
 using Microsoft.AspNetCore.Hosting;
@@ -12,9 +12,9 @@ using Xunit.Sdk;
 
 [assembly: AssemblyFixture(typeof(ApiFixture))]
 
-namespace Deevenue.Api.Tests;
+namespace Deevenue.Api.Tests.Framework;
 
-public class ApiFixture : IDisposable
+internal class ApiFixture : IDisposable
 {
     private bool disposedValue;
 
@@ -81,7 +81,7 @@ public class ApiFixture : IDisposable
             set("AUTH_HEADER_VALUE", "admin");
 
             set("MEDIA_OPERATION_TIMEOUT_MS", "10000");
-            set("BACKUP_DIRECTORY", "/todo");
+            set("BACKUP_DIRECTORY", "/unused");
 
             set("EXTERNAL_SENTRY_DSN", string.Empty);
             set("EXTERNAL_SENTRY_TRACES_SAMPLE_RATE", "0.0");

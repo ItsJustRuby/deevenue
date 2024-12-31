@@ -7,8 +7,6 @@ namespace Deevenue.Api.Tests;
 
 public class MediumControllerGetAllTests
 {
-    private HttpResponseMessage response = null!;
-
     [Fact]
     public async Task GetAll_ReturnsOk_OnDefaultEmptyQuery()
     {
@@ -18,13 +16,11 @@ public class MediumControllerGetAllTests
             PageSize = 10,
         });
 
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        Then.Response.Value.StatusCode.Should().Be(HttpStatusCode.OK);
     }
 
     private async Task WhenGettingAllMediaAsync(PaginationQueryParameters paginationParameters)
     {
-        var client = ApiFixture.Instance.CreateClient();
-
         var dict = new Dictionary<string, string?>()
         {
             ["pageNumber"] = paginationParameters.PageNumber.ToString(),
@@ -32,6 +28,6 @@ public class MediumControllerGetAllTests
         };
 
         var path = QueryHelpers.AddQueryString("/medium", dict);
-        response = await client.GetAsync(path, TestContext.Current.CancellationToken);
+        await When.UsingApiClient(c => c.GetAsync(path, TestContext.Current.CancellationToken));
     }
 }
