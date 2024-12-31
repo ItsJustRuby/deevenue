@@ -5,18 +5,14 @@ namespace Deevenue.Api.Tests;
 
 public class MediumControllerGetTests
 {
-    private HttpResponseMessage response = null!;
-
     [Fact]
     public async Task Get_Returns404_IfMediumDoesNotExist()
     {
-        await WhenGettingAsync(Guid.NewGuid());
-        response.Should().HaveStatusCode(HttpStatusCode.NotFound);
-    }
+        await When.UsingApiClient(c =>
+        {
+            return c.GetAsync($"/medium/{Guid.NewGuid()}", TestContext.Current.CancellationToken);
+        });
 
-    private async Task WhenGettingAsync(Guid id)
-    {
-        var client = ApiFixture.Instance.CreateClient();
-        response = await client.GetAsync($"/medium/{id}", TestContext.Current.CancellationToken);
+        Then.Response.Value.Should().HaveStatusCode(HttpStatusCode.NotFound);
     }
 }

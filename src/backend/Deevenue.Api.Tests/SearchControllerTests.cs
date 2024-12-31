@@ -9,8 +9,6 @@ namespace Deevenue.Api.Tests;
 
 public class SearchControllerTests
 {
-    private HttpResponseMessage response = null!;
-
     [Fact]
     public async Task ReturnsOk_OnDefaultPaginationParameters()
     {
@@ -21,13 +19,12 @@ public class SearchControllerTests
             Query = "foo"
         });
 
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
-        var viewModel = await response.JsonAsync<PaginationViewModel<SearchResultViewModel>>();
+        Then.Response.Value.StatusCode.Should().Be(HttpStatusCode.OK);
+        var viewModel = Then.Response.AsViewModel<PaginationViewModel<SearchResultViewModel>>();
         viewModel.PageNumber.Should().Be(1);
         viewModel.PageSize.Should().Be(10);
     }
 
-    // TODO: Learn more about non-inline data. Or use Bogus.
     [Theory]
     [InlineData(300, -1)]
     [InlineData(4, 999)]
@@ -42,13 +39,11 @@ public class SearchControllerTests
             Query = "foo"
         });
 
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        Then.Response.Value.StatusCode.Should().Be(HttpStatusCode.OK);
     }
 
     private async Task WhenSearchingForAsync(SearchParams searchParams)
     {
-        var client = ApiFixture.Instance.CreateClient();
-
         var dict = new Dictionary<string, string?>()
         {
             ["pageNumber"] = searchParams.PageNumber.ToString(),
@@ -57,6 +52,6 @@ public class SearchControllerTests
         };
 
         var path = QueryHelpers.AddQueryString("/search", dict);
-        response = await client.GetAsync(path, TestContext.Current.CancellationToken);
+        await When.UsingApiClient(c => c.GetAsync(path, TestContext.Current.CancellationToken));
     }
 }
