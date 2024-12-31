@@ -44,7 +44,23 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Using Include="Deevenue.Api.Tests.Framework.GivenFixture">
+      <Static>True</Static>
+    </Using>
+    <Using Include="Deevenue.Api.Tests.Framework.WhenFixture">
+      <Static>True</Static>
+    </Using>
+    <Using Include="Deevenue.Api.Tests.Framework.ThenFixture">
+      <Static>True</Static>
+    </Using>
+  </ItemGroup>
+	
+  <ItemGroup>
     <Using Include="Xunit" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>
