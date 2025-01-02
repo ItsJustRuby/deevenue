@@ -35,7 +35,7 @@ tasks:
 
   codegen:tag-version:
     cmds:
-      - bash scripts/tag-version.sh
+      - bash scripts/codegen-tag-version.sh
     silent: true
 
   dev:check-frontend:
