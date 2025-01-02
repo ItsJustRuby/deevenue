@@ -23,7 +23,7 @@ services:
       - ./src/frontend:/src
       # Intentionally mounting nothing on this folder means
       # that even if we mount sth to /src, the node_modules subfolder
-      # is not overwritten by the one from the hose
+      # is not overwritten by the one from the host
       - /src/node_modules
   db:
     build:
