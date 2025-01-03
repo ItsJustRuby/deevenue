@@ -14,7 +14,7 @@
 
   let currentName = $state("");
 
-  const onKeyPress = async (e: KeyboardEvent) => {
+  const onkeypress = async (e: KeyboardEvent) => {
     const doSubmit =
       (e.code === "Enter" || e.code == "Space") &&
       !e.metaKey &&
@@ -52,7 +52,7 @@
   <input
     bind:value={currentName}
     class="grow resize-none border-none focus:ring-0"
-    onkeypress={onKeyPress}
+    {onkeypress}
     placeholder="Add…"
   />
 </div>

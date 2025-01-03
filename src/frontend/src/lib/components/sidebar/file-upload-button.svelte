@@ -8,6 +8,7 @@
   import { goto } from "$app/navigation";
   import { lastMediumUpdate } from "$lib/store.svelte";
   import { getEntityFromNotification } from "$lib/notifications";
+  import type { ChangeEventHandler } from "svelte/elements";
 
   let fileCount = $state(0);
   let uploadedFileCount = $state(0);
@@ -58,8 +59,8 @@
     });
   };
 
-  const setFileCount = (e: Event) => {
-    fileCount = (e.target as HTMLInputElement).files?.length || 0;
+  const setFileCount: ChangeEventHandler<HTMLInputElement> = (e) => {
+    fileCount = e.currentTarget.files?.length || 0;
   };
 </script>
 
