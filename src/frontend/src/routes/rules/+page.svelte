@@ -9,8 +9,9 @@
 
   import RuleText from "$lib/components/rules/ruleText.svelte";
   import { addTitlePart } from "$lib/title.svelte";
+  import type { ChangeEventHandler } from "svelte/elements";
 
-  let inputRef = $state<HTMLElement | null>(null);
+  let inputRef = $state<HTMLInputElement | null>(null);
 
   let currentRules = $state<RulesViewModel | null>(null);
   let validatedRules = $state<RulesViewModel | null>(null);
@@ -21,8 +22,8 @@
     if (!res.error) currentRules = res.data;
   });
 
-  const onchange = async (e: Event) => {
-    const inputElement = e.target as HTMLInputElement;
+  const onchange: ChangeEventHandler<HTMLInputElement> = async (e) => {
+    const inputElement = e.currentTarget;
     if (inputElement.files?.length !== 1) return;
 
     isRulesFileValid = null;
@@ -52,7 +53,7 @@
     currentRules = rules.data!;
     validatedRules = null;
     isRulesFileValid = null;
-    if (inputRef !== null) (inputRef as HTMLInputElement).value = "";
+    if (inputRef !== null) inputRef.value = "";
   };
 
   const deleteRule = async (index: number) => {
