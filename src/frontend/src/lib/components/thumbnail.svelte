@@ -62,12 +62,14 @@
             loop={true}
             muted={true}
             playsInline={true}
+            preload="none"
+            disablepictureinpicture
           >
           </video>
           <!-- svelte-ignore a11y_mouse_events_have_key_events -->
           <!-- svelte-ignore a11y_no_static_element_interactions -->
           <div
-            class="bg-muted grid hidden h-full w-full place-items-center opacity-0"
+            class="grid hidden h-full w-full place-items-center bg-muted opacity-0"
             onmouseover={startVideo}
             onmouseleave={rewindVideo}
             bind:this={missingThumbnailRef}
