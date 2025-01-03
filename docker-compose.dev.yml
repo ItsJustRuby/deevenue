@@ -57,6 +57,7 @@ services:
     env_file: .env.dev
     ports:
       - "443:443"
+      - "443:443/udp"
     volumes:
       - "./src/entrypoint/dev.Caddyfile:/etc/caddy/Caddyfile"
       - "./development/caddy/data:/data"
