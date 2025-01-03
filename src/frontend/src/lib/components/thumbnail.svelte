@@ -62,7 +62,7 @@
             loop={true}
             muted={true}
             playsInline={true}
-            preload="none"
+            preload="auto"
             disablepictureinpicture
           >
           </video>
