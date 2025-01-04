@@ -24,5 +24,6 @@ public static class DomainSetup
         di.Services.AddSingleton<ITaggyFileName, TaggyFileName>();
         di.Services.AddSingleton<IAddImageService, AddImageService>();
         di.Services.AddSingleton<IAddVideoService, AddVideoService>();
+        di.Services.AddSingleton<ITracingSpans, TracingSpans>();
     }
 }
