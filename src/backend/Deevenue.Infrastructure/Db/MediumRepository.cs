@@ -217,12 +217,12 @@ internal class MediumRepository(DeevenueContext dbContext) : IMediumRepository
             .ToHashSetAsync();
 
         return new TagNamesByMediumId(
-            await Foo(mediumIds, allTagImplications, relevantMediumTags),
-            await Foo(mediumIds, allTagImplications, relevantMediumTagAbsences)
+            await GetReachable(mediumIds, allTagImplications, relevantMediumTags),
+            await GetReachable(mediumIds, allTagImplications, relevantMediumTagAbsences)
         );
     }
 
-    private async Task<IReadOnlyDictionary<Guid, IReadOnlySet<string>>> Foo(
+    private async Task<IReadOnlyDictionary<Guid, IReadOnlySet<string>>> GetReachable(
         HashSet<Guid> mediumIds, ILookup<Guid, Guid> allTagImplications, IReadOnlySet<ITagLinkedToMedium> links)
     {
         var innateTagIdsByMediumId = links.ToLookup(mt => mt.MediumId, mt => mt.TagId);

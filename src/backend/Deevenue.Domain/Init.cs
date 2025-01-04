@@ -23,6 +23,7 @@ public static class DomainSetup
         // internal
         di.Services.AddSingleton<ITaggyFileName, TaggyFileName>();
         di.Services.AddSingleton<IAddImageService, AddImageService>();
-        di.Services.AddTransient<IAddVideoService, AddVideoService>();
+        di.Services.AddSingleton<IAddVideoService, AddVideoService>();
+        di.Services.AddSingleton<ITracingSpans, TracingSpans>();
     }
 }
