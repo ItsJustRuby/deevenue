@@ -1,8 +1,7 @@
-﻿
-
-namespace Deevenue.Domain.Media;
+﻿namespace Deevenue.Domain.Media;
 
 internal class SimilarMediaService(
+    ITracingSpans tracingSpans,
     IMediumRepository repository,
     ISfwService sfwService) : ISimilarMediaService
 {
@@ -10,6 +9,8 @@ internal class SimilarMediaService(
 
     public async Task<IReadOnlyList<SimilarMedium>> GetSimilarAsync(Guid mediumId)
     {
+        using var tracingSpan = tracingSpans.Create(nameof(SimilarMediaService), nameof(GetSimilarAsync));
+
         // Get all media that have at least some tags in common
         var all = await repository.GetAllSearchableAsync(sfwService.IsSfw);
         var current = all.Single(m => m.Id == mediumId);
