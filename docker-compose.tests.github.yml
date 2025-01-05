@@ -8,6 +8,8 @@ services:
     stop_signal: SIGKILL
     stdin_open: true
     tty: true
+    environment:
+      - DEEVENUE_EXTERNAL_SENTRY_DSN=${DEEVENUE_EXTERNAL_SENTRY_DSN}
     volumes:
       - ./coverage:/results
       # Required for testcontainers
