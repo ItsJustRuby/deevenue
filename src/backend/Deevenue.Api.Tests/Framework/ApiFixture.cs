@@ -83,10 +83,13 @@ internal class ApiFixture : IDisposable
             set("MEDIA_OPERATION_TIMEOUT_MS", "10000");
             set("BACKUP_DIRECTORY", "/unused");
 
-            // TODO: Try me
-            // Intentionally do not override Sentry DSN so that
+            // Intentionally do not always override Sentry DSN so that
             // the test runner on CI can still inject it if it wants to.
-            //set("EXTERNAL_SENTRY_DSN", string.Empty);
+            //
+            // When running tests locally, you can still leave the variable unset,
+            // and the tests will run without Sentry integration.
+            if (Environment.GetEnvironmentVariable("DEEVENUE_EXTERNAL_SENTRY_DSN") == null)
+                set("EXTERNAL_SENTRY_DSN", string.Empty);
             set("EXTERNAL_SENTRY_TRACES_SAMPLE_RATE", "0.0");
 
             set("DB_HOST", _postgres.Hostname);
