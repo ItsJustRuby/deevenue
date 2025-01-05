@@ -91,6 +91,7 @@ tasks:
 
   prod:build:
     deps: [codegen:openapi-lib]
+    dotenv: [".env.dev"]
     cmds:
       - task: codegen:tag-version
       - bash scripts/build-prod.sh
