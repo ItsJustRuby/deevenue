@@ -27,6 +27,15 @@ public class SessionControllerTests
     }
 }
 
+public class FalsePositiveTests
+{
+    [Fact]
+    public void TestSentryIntegration()
+    {
+        SentrySdk.CaptureException(new Exception("Test"));
+    }
+}
+
 public class JobControllerTests { }
 public class RuleControllerTests { }
 public class TagControllerTests { }
