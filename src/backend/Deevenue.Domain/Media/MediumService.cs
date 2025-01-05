@@ -7,7 +7,6 @@ internal class MediumService(
     IMediumStorage mediumStorage,
     IThumbnailStorage thumbnailStorage,
     IMediumRepository mediaRepository,
-    ISimilarMediaService similarMediaService,
     ISfwService sfwService) : IMediumService
 {
     public Task DeleteAsync(Guid mediumId)
@@ -54,16 +53,13 @@ internal class MediumService(
         if (sfwService.IsSfw && dbResult.Rating != Rating.Safe)
             return new NotSfw();
 
-        var similarMedia = await similarMediaService.GetSimilarAsync(dbResult.Id);
-
         var viewModel = new MediumViewModel(
             dbResult.Id,
             MediaKinds.Parse(dbResult.ContentType),
             dbResult.Tags,
             dbResult.AbsentTags,
             dbResult.ThumbnailSheetIds,
-            dbResult.Rating,
-            similarMedia
+            dbResult.Rating
         );
 
         return new Success(viewModel);

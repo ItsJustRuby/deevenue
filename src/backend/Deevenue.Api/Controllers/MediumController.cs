@@ -10,6 +10,7 @@ namespace Deevenue.Api.Controllers;
 public class MediumController(
     IAddMediumService addMediumService,
     IMediumService mediumService,
+    ISimilarMediaService similarMediaService,
     IThumbnailSheetService thumbnailSheetService,
     IMediumTagService mediumTagService) : DeevenueApiControllerBase
 {
@@ -31,6 +32,15 @@ public class MediumController(
     {
         var tryGetResult = await mediumService.TryGetAsync(id);
         return tryGetResult.Accept(new TryGetResultVisitor(this));
+    }
+
+    [HttpGet("{id:Guid}/similar", Name = "getSimilarMedia")]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(400)]
+    public async Task<ActionResult<SimilarMediaViewModel>> GetSimilarMedia(Guid id)
+    {
+        var similarMedia = await similarMediaService.GetSimilarAsync(id);
+        return new SimilarMediaViewModel(similarMedia);
     }
 
     [HttpGet("withHash/md5/{hash}", Name = "findMediumByMD5Hash")]
@@ -139,6 +149,9 @@ public class MediumController(
 
     public record StartThumbnailSheetJobParameters(int ThumbnailCount);
     public record ThumbnailSheetJobViewModel(Guid Id);
+
+    public record SimilarMediaViewModel(IReadOnlyList<SimilarMedium> SimilarMedia);
+
 
     [HttpDelete("{id:Guid}", Name = "deleteMedium")]
     [ProducesResponseType(200, Type = typeof(NotificationViewModel))]

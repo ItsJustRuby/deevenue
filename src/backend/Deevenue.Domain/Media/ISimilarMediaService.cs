@@ -1,6 +1,6 @@
 ﻿namespace Deevenue.Domain.Media;
 
-internal interface ISimilarMediaService
+public interface ISimilarMediaService
 {
     Task<IReadOnlyList<SimilarMedium>> GetSimilarAsync(Guid mediumId);
 }
