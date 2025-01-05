@@ -6,9 +6,9 @@ ENTRYPOINT_TAG="${DEEVENUE_ENTRYPOINT_TAG:-deevenue-prod-entrypoint}"
 
 docker build \
     -t "$BACKEND_TAG" \
-    --secret id=sentry_auth_token,env=DEEVENUE_BUILD_SENTRY_AUTH_TOKEN \
-    --secret id=sentry_org,env=DEEVENUE_BUILD_SENTRY_ORG \
-    --secret id=sentry_project,env=DEEVENUE_BUILD_SENTRY_PROJECT \
+    --secret id=SENTRY_AUTH_TOKEN,env=SENTRY_AUTH_TOKEN \
+    --secret id=SENTRY_ORG,env=SENTRY_ORG \
+    --secret id=SENTRY_PROJECT,env=SENTRY_PROJECT \
     -f src/backend/prod.Dockerfile \
     src/backend
 
