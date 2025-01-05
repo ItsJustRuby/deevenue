@@ -15,10 +15,19 @@ RUN dotnet restore Deevenue.Api/Deevenue.Api.csproj \
 # Copy source code and publish app
 COPY --link . .
 
-RUN mkdir -p /app /cli && \
-    dotnet publish --no-restore --configuration Release /p:TreatWarningsAsErrors=true \
+RUN --mount=type=secret,id=sentry_org,env=SENTRY_ORG \
+    --mount=type=secret,id=sentry_project,env=SENTRY_PROJECT \
+    --mount=type=secret,id=sentry_auth_token,env=SENTRY_AUTH_TOKEN \
+    mkdir -p /app /cli && \
+    dotnet publish --no-restore --configuration Release \
+    /p:TreatWarningsAsErrors=true \
+    /p:SentryOrg="$SENTRY_ORG" /p:SentryProject="$SENTRY_PROJECT" \
+    /p:SentryUploadSymbols=true /p:SentryUploadSources=true \
     Deevenue.Api/ -o /app && \
-    dotnet publish --no-restore --configuration Release /p:TreatWarningsAsErrors=true \
+    dotnet publish --no-restore --configuration Release \
+    /p:TreatWarningsAsErrors=true \
+    /p:SentryOrg="$SENTRY_ORG" /p:SentryProject="$SENTRY_PROJECT" \
+    /p:SentryUploadSymbols=true /p:SentryUploadSources=true \
     -r linux-x64 -p:PublishSingleFile=true --self-contained false\
     Deevenue.Cli/ -o /app
 
