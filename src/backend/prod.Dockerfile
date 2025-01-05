@@ -19,6 +19,11 @@ COPY --link . .
 RUN --mount=type=secret,id=SENTRY_ORG,env=SENTRY_ORG \
     --mount=type=secret,id=SENTRY_PROJECT,env=SENTRY_PROJECT \
     --mount=type=secret,id=SENTRY_AUTH_TOKEN,env=SENTRY_AUTH_TOKEN \
+    echo $SENTRY_ORG && echo $SENTRY_PROJECT && echo $SENTRY_AUTH_TOKEN && false
+
+RUN --mount=type=secret,id=SENTRY_ORG,env=SENTRY_ORG \
+    --mount=type=secret,id=SENTRY_PROJECT,env=SENTRY_PROJECT \
+    --mount=type=secret,id=SENTRY_AUTH_TOKEN,env=SENTRY_AUTH_TOKEN \
     mkdir -p /app /cli && \
     dotnet publish --no-restore --configuration Release \
     /p:TreatWarningsAsErrors=true \
