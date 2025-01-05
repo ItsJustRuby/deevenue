@@ -6,5 +6,4 @@ public record MediumViewModel(
     IReadOnlyList<string> Tags,
     IReadOnlyList<string> AbsentTags,
     IReadOnlyList<Guid> ThumbnailSheetIds,
-    Rating Rating,
-    IReadOnlyList<SimilarMedium> SimilarMedia);
+    Rating Rating);
