@@ -57,9 +57,9 @@ jobs:
           file: ${{ matrix.component.file }}
           push: true
           secrets: |
-            SENTRY_ORG=${{ secrets.SENTRY_ORG }}
-            SENTRY_PROJECT=${{ secrets.SENTRY_PROJECT }}
-            SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}
+            "SENTRY_ORG=${{ secrets.SENTRY_ORG }}"
+            "SENTRY_PROJECT=${{ secrets.SENTRY_PROJECT }}"
+            "SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}"
           tags: ${{ steps.meta.outputs.tags }}
   Deploy:
     runs-on: ubuntu-latest
