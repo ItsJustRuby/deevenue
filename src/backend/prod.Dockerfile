@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1.10
 FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 
