@@ -34,16 +34,17 @@ jobs:
       - uses: arduino/setup-task@v2
       - name: Run OpenAPI linter
         run: task ci:lint:openapi
-  Dockerfiles:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+  # TODO: Hadolint integration is broken until https://github.com/hadolint/hadolint/issues/1039 is fixed.
+  # Dockerfiles:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
 
-      - name: Run hadolint
-        uses: hadolint/hadolint-action@v3.1.0
-        with:
-          dockerfile: "*.Dockerfile"
-          recursive: true
+  #     - name: Run hadolint
+  #       uses: hadolint/hadolint-action@v3.1.0
+  #       with:
+  #         dockerfile: "*.Dockerfile"
+  #         recursive: true
   github-action-workflows:
     name: "GitHub Action workflows"
     runs-on: ubuntu-latest
