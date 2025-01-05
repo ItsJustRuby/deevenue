@@ -91,6 +91,22 @@ builder.WebHost.UseSentry(c =>
     c.Dsn = Config.External.Sentry.Dsn;
     c.Environment = Config.Environment.Name;
     c.TracesSampleRate = Config.External.Sentry.TracesSampleRate;
+    c.SetBeforeSend(sentryEvent =>
+    {
+        if (sentryEvent.SentryExceptions == null)
+            return sentryEvent;
+
+        foreach (var exception in sentryEvent.SentryExceptions)
+        {
+            if (exception.Mechanism?.Handled != true)
+                return sentryEvent;
+        }
+
+        // If the event has exceptions,
+        // but they are all handled,
+        // there is no need to report them.
+        return null;
+    });
 });
 
 if (Config.Environment.AllowsSensitiveDataLogging)
