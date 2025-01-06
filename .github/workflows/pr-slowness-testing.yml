@@ -11,15 +11,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Ping deployment using POST without auth
+      - name: Print debug info
         run: |
-          curl -X POST ${{ secrets.DEPLOYMENT_API_URL }}
-      - name: Ping deployment using GET without auth
+          curl --version
+      - name: Ping deployment using GET with correct auth
         run: |
-          curl ${{ secrets.DEPLOYMENT_API_URL }}
-      - name: Ping deployment using POST with wrong auth
-        run: |
-          curl -X POST -H "Authorization: Bearer foo" ${{ secrets.DEPLOYMENT_API_URL }}
-      - name: Ping deployment using GET with wrong auth
-        run: |
-          curl -H "Authorization: Bearer foo" ${{ secrets.DEPLOYMENT_API_URL }}
+          curl -H "Authorization: Bearer ${{ secrets.DEPLOYMENT_TOKEN }}" ${{ secrets.DEPLOYMENT_API_URL }}
