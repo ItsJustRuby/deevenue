@@ -67,9 +67,10 @@ jobs:
     steps:
       - name: Ping deployment to pull new images
         run: |
-          curl -X POST -H 'Authorization: Bearer ${{ secrets.DEPLOYMENT_TOKEN }}' ${{ secrets.DEPLOYMENT_API_URL }}
+          curl -H 'Authorization: Bearer ${{ secrets.DEPLOYMENT_TOKEN }}' ${{ secrets.DEPLOYMENT_API_URL }}
   create-sentry-release:
     runs-on: ubuntu-latest
+    needs: [Deploy]
     name: "Create Sentry release"
     steps:
       - uses: actions/checkout@v4
