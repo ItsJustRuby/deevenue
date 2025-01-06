@@ -1,0 +1,25 @@
+name: Test slow deployments
+
+on:
+  push:
+    branches-ignore: ["main"]
+  workflow_dispatch:
+
+jobs:
+  ping-deployment-for-testing:
+    name: "Ping deployment for testing"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Ping deployment using POST without auth
+        run: |
+          curl -X POST ${{ secrets.DEPLOYMENT_API_URL }}
+      - name: Ping deployment using GET without auth
+        run: |
+          curl ${{ secrets.DEPLOYMENT_API_URL }}
+      - name: Ping deployment using POST with wrong auth
+        run: |
+          curl -X POST -H "Authorization: Bearer foo" ${{ secrets.DEPLOYMENT_API_URL }}
+      - name: Ping deployment using GET with wrong auth
+        run: |
+          curl -H "Authorization: Bearer foo" ${{ secrets.DEPLOYMENT_API_URL }}
