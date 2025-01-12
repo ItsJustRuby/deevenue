@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { page } from "$app/stores";
+  import { page } from "$app/state";
 
   import { goto } from "$app/navigation";
   import { api } from "$lib/api/client";
@@ -11,11 +11,11 @@
   import { group } from "$lib/utility";
 
   let pageSize = $state(
-    parseInt($page.url.searchParams.get("pageSize") ?? "10"),
+    parseInt(page.url.searchParams.get("pageSize") ?? "10"),
   );
 
   let pageNumber = $state(
-    parseInt($page.url.searchParams.get("pageNumber") ?? "1"),
+    parseInt(page.url.searchParams.get("pageNumber") ?? "1"),
   );
 
   const onPageSizeChange = (newPageSize: number) => {
@@ -38,7 +38,7 @@
   });
 
   $effect(() => {
-    if ($page.url.searchParams.size === 0) {
+    if (page.url.searchParams.size === 0) {
       pageNumber = 1;
       pageSize = 10;
     }
@@ -53,12 +53,10 @@
     });
   });
 
-  let searchResults = $state<SearchResultsViewModel | null>(null);
-
-  const rerunSearch = async () => {
+  const searchResultsPromise = $derived.by(async () => {
     if (session.isSfw === null || lastMediumUpdate.timestamp === null) {
       // This only happens during startup, which is irrelevant to us.
-      return;
+      return null;
     }
 
     const res =
@@ -81,11 +79,7 @@
             },
           });
 
-    searchResults = res.data!;
-  };
-
-  $effect(() => {
-    rerunSearch();
+    return res.data!;
   });
 </script>
 
@@ -119,23 +113,25 @@
 {/snippet}
 
 <div class="space-y-4">
-  {#if searchResults !== null}
-    {#if searchResults.items.length === 0}
-      <div class="text-4xl font-semibold">No results found.</div>
-    {:else}
-      {@render headerAndFooter(searchResults)}
-      <div class="grid grid-cols-1 gap-4 lg:hidden">
-        {@render columns(searchResults, 1)}
-      </div>
-      <div class="grid grid-cols-2 gap-4 max-lg:hidden xl:hidden">
-        {@render columns(searchResults, 2)}
-      </div>
-      <div class="grid grid-cols-4 gap-4 max-xl:hidden">
-        {@render columns(searchResults, 4)}
-      </div>
-      {@render headerAndFooter(searchResults)}
+  {#await searchResultsPromise then searchResults}
+    {#if searchResults !== null}
+      {#if searchResults.items.length === 0}
+        <div class="text-4xl font-semibold">No results found.</div>
+      {:else}
+        {@render headerAndFooter(searchResults)}
+        <div class="grid grid-cols-1 gap-4 lg:hidden">
+          {@render columns(searchResults, 1)}
+        </div>
+        <div class="grid grid-cols-2 gap-4 max-lg:hidden xl:hidden">
+          {@render columns(searchResults, 2)}
+        </div>
+        <div class="grid grid-cols-4 gap-4 max-xl:hidden">
+          {@render columns(searchResults, 4)}
+        </div>
+        {@render headerAndFooter(searchResults)}
+      {/if}
     {/if}
-  {/if}
+  {/await}
 </div>
 
 <style lang="postcss">
