@@ -2,7 +2,7 @@
   import Search from "lucide-svelte/icons/search";
 
   import { goto } from "$app/navigation";
-  import { page } from "$app/stores";
+  import { page } from "$app/state";
   import TagTitle from "./tag-title.svelte";
   import { api } from "$lib/api/client";
   import type { TagViewModel } from "$lib/api/models";
@@ -14,7 +14,7 @@
   let tag = $state<TagViewModel | null>(null);
 
   onMount(async () => {
-    const currentName = $page.params.name!;
+    const currentName = page.params.name!;
     const res = await api.GET("/tag/{name}", {
       params: {
         path: {

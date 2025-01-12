@@ -1,6 +1,6 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
-  import { page } from "$app/stores";
+  import { page } from "$app/state";
 
   import MediumTags from "./medium-tags.svelte";
   import MediumDisplay from "./medium-display.svelte";
@@ -14,7 +14,7 @@
   import MediumSimilarMedia from "./medium-similar-media.svelte";
   import MediumRating from "./medium-rating.svelte";
 
-  const id = $derived($page.params.id!);
+  const id = $derived(page.params.id!);
   let medium = $state<MediumViewModel | null>(null);
 
   $effect(() => {
