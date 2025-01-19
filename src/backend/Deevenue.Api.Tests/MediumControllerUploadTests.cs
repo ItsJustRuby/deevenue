@@ -21,6 +21,6 @@ public class MediumControllerUploadTests
     {
         mediumId.Should().HaveValue();
         await When.UsingApiClient(c => c.GetAsync($"/file/{mediumId}", TestContext.Current.CancellationToken));
-        Then.Response.Value.Should().HaveStatusCode(HttpStatusCode.OK);
+        Then.Response.Value.StatusCode.Should().Be(HttpStatusCode.OK);
     }
 }
