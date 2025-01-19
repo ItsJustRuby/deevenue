@@ -13,6 +13,6 @@ public class MediumControllerGetTests
             return c.GetAsync($"/medium/{Guid.NewGuid()}", TestContext.Current.CancellationToken);
         });
 
-        Then.Response.Value.Should().HaveStatusCode(HttpStatusCode.NotFound);
+        Then.Response.Value.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 }
