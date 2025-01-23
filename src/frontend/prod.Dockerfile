@@ -1,4 +1,4 @@
-FROM oven/bun:1.1-alpine AS base
+FROM oven/bun:1.2-alpine AS base
 WORKDIR /src
 
 # install dependencies into temp directory
@@ -7,7 +7,7 @@ FROM base AS deps
 RUN mkdir -p /temp/dev && mkdir -p /temp/prod
 
 WORKDIR /temp/dev
-COPY package.json bun.lockb ./
+COPY package.json bun.lock ./
 RUN bun install --frozen-lockfile
 
 FROM base AS build
