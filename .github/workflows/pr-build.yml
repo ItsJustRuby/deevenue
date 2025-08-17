@@ -23,7 +23,7 @@ jobs:
             file: "src/entrypoint/Dockerfile"
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: oven-sh/setup-bun@v2
       - uses: arduino/setup-task@v2
 

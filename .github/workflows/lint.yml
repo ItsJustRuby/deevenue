@@ -9,7 +9,7 @@ jobs:
     name: "Frontend & OpenAPI"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: oven-sh/setup-bun@v2
       - uses: arduino/setup-task@v2
 
@@ -18,7 +18,7 @@ jobs:
   Backend:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 9.0
@@ -29,7 +29,7 @@ jobs:
   OpenAPI:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: oven-sh/setup-bun@v2
       - uses: arduino/setup-task@v2
       - name: Run OpenAPI linter
@@ -38,7 +38,7 @@ jobs:
   # Dockerfiles:
   #   runs-on: ubuntu-latest
   #   steps:
-  #     - uses: actions/checkout@v4
+  #     - uses: actions/checkout@v5
 
   #     - name: Run hadolint
   #       uses: hadolint/hadolint-action@v3.1.0
@@ -49,7 +49,7 @@ jobs:
     name: "GitHub Action workflows"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Download actionlint
         id: get_actionlint
         shell: bash
@@ -63,7 +63,7 @@ jobs:
     name: "Shell scripts"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Run ShellCheck
         uses: ludeeus/action-shellcheck@2.0.0
         with:
